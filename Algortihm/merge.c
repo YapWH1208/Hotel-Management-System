@@ -1,30 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void merge_sort(int arr[], int start, int end);
-void merge(int arr[], int start, int mid, int end);
-
-int main()
-{
-    int arr[5] = {5, 4, 3, 2, 1};
-    int len = sizeof(arr)/sizeof(arr[0]);
-
-    printf("Before sorting: ");
-    for (int i = 0; i < len; i++) {
-        printf("%d ", arr[i]);
-    }
-
-    merge_sort(arr, 0, len-1);
-
-    printf("\nAfter sorting: ");
-    for (int i = 0; i < len; i++) {
-        printf("%d ", arr[i]);
-    }
-
-    printf("\n");
-    return 0;
-}
-
 void merge_sort(int arr[], int start, int end)
 {
     if (start < end) {
