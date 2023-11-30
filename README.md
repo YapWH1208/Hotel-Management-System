@@ -20,7 +20,7 @@ This is a simple hotel management system implemented in C, providing basic funct
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/your-username/Hotel-Management-System.git
+    git clone https://github.com/YapWH1208/Hotel-Management-System.git
     ```
 
 2. Navigate to the project directory:
@@ -44,8 +44,10 @@ Upon running the executable, the system will prompt for login credentials. Use t
 
 ## Contributors
 
-- John Doe (@johndoe)
-- Jane Smith (@janesmith)
+- Lyu YaXing (@ASTAR)
+- Yap WeiHerng (@YapWH1208)
+- Lee SinTian (@Tian)
+- Cao Rui (@HawkingC)
 
 ## License
 
