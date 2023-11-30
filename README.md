@@ -51,5 +51,5 @@ Upon running the executable, the system will prompt for login credentials. Use t
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
+This project is licensed under the [Apache License 2.0](LICENSE).
 
