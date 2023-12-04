@@ -1,1 +1,0 @@
-CMakeLists.txt not found in E:\GitHub\Hotel-Management-System\Algortihm Select CMakeLists.txt
