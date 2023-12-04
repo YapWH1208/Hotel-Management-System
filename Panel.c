@@ -53,6 +53,10 @@ void displayEmployee();
 void displayRoom();
 void roominfo();
 void addemp();
+void quickSort();
+int partition();
+int searchEmployeeByID();
+void ede();
 
 int main() {
     printf("***   Welcome to XMUM Hotel!   ***\n");
@@ -164,6 +168,7 @@ void showMainPanel(enum SystemState *currentState) {
 
 // Admin login function
 void adminLogin() {
+    system("cls");
     char username[20];
     char password[20];
 
@@ -188,6 +193,7 @@ void adminLogin() {
     printf("\n=== Admin Panel ===\n");
     printf("Logged in as Admin. Performing admin tasks\n");
     printf("Now the task can be chosen by admin are as follows,\n1. Show Employees' information and add new employee if you wish.\n2. Show Room information and add new room if you wish.\n");
+    printf("3. Search The Employee.\n4. Edit Employee data.\n5. Delete Employee.\n6. Edit Room.\n7. Exit Admin Panel.\n");
     printf("Enter your task to be chosen: ");
     scanf("%d", &choice);
     printf("\n");
@@ -198,6 +204,14 @@ void adminLogin() {
             break;
         case 2:
             roominfo();
+            break;
+        case 3:
+            bse();
+            break;
+        case 4:
+            ede();
+            break;
+        case 7:
             break;
         default:
             printf("Invalid choice. Please enter a valid option.\n");
@@ -382,4 +396,175 @@ void roominfo(){
     }
 
     return 0;
+}
+
+void quickSort(Employee employees[], int left, int right) {
+    if (left < right) {
+        int pivot = partition(employees, left, right);
+
+        quickSort(employees, left, pivot - 1);
+
+        quickSort(employees, pivot + 1, right);
+    }
+}
+
+int partition(Employee employees[], int left, int right) {
+    int pivot = employees[right].ID;
+    int i = left - 1;
+
+    for (int j = left; j < right; j++) {
+        if (employees[j].ID < pivot) {
+            i++;
+
+            Employee temp = employees[i];
+            employees[i] = employees[j];
+            employees[j] = temp;
+        }
+    }
+
+    Employee temp = employees[i + 1];
+    employees[i + 1] = employees[right];
+    employees[right] = temp;
+
+    return i + 1;
+}
+
+void bse() {
+    FILE *file;
+    char line[MAX_LINE_LENGTH];
+    Employee employees[MAX_EMPLOYEES];
+    int numEmployees = 0;
+
+    file = fopen("empinfo.txt", "r");
+    if (file == NULL) {
+        printf("Unable to open file.\n");
+        return;
+    }
+
+    fgets(line, MAX_LINE_LENGTH, file);
+
+    while (fgets(line, MAX_LINE_LENGTH, file) && numEmployees < MAX_EMPLOYEES) {
+        sscanf(line, "%d,%[^,],%d,%[^,],%[^,],%[^,],%[^,],%[^,],%s",
+               &employees[numEmployees].ID, employees[numEmployees].Name, &employees[numEmployees].Age,
+               employees[numEmployees].Gender, employees[numEmployees].Job, employees[numEmployees].Salary,
+               employees[numEmployees].Phone, employees[numEmployees].Address, employees[numEmployees].Email);
+        numEmployees++;
+    }
+
+    fclose(file);
+
+    quickSort(employees, 0, numEmployees - 1);
+
+    int searchID;
+    int resultIndex;
+
+    printf("Enter the Employee ID to search: ");
+    scanf("%d", &searchID);
+
+    resultIndex = searchEmployeeByID(employees, numEmployees, searchID);
+
+    if (resultIndex != -1) {
+        printf("\nEmployee found at index %d:\n", resultIndex);
+        displayEmployee(employees[resultIndex]);
+    } else {
+        printf("Employee with ID %d not found.\n", searchID);
+    }
+}
+
+int searchEmployeeByID(Employee employees[], int numEmployees, int targetID) {
+    int left = 0;
+    int right = numEmployees - 1;
+
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+
+        if (employees[mid].ID == targetID)
+            return mid;
+
+        if (employees[mid].ID > targetID)
+            right = mid - 1;
+
+        else
+            left = mid + 1;
+    }
+
+    return -1;
+}
+
+void ede() {
+    FILE *file;
+    char line[MAX_LINE_LENGTH];
+    Employee employees[MAX_EMPLOYEES];
+    int numEmployees = 0;
+
+    file = fopen("empinfo.txt", "r");
+    if (file == NULL) {
+        printf("Unable to open file.\n");
+        return;
+    }
+
+    fgets(line, MAX_LINE_LENGTH, file);
+
+    while (fgets(line, MAX_LINE_LENGTH, file) && numEmployees < MAX_EMPLOYEES) {
+        sscanf(line, "%d,%[^,],%d,%[^,],%[^,],%[^,],%[^,],%[^,],%s",
+               &employees[numEmployees].ID, employees[numEmployees].Name, &employees[numEmployees].Age,
+               employees[numEmployees].Gender, employees[numEmployees].Job, employees[numEmployees].Salary,
+               employees[numEmployees].Phone, employees[numEmployees].Address, employees[numEmployees].Email);
+        numEmployees++;
+    }
+
+    fclose(file);
+
+    quickSort(employees, 0, numEmployees - 1);
+
+    int searchID;
+    int resultIndex;
+
+    printf("Enter the Employee ID to edit: ");
+    scanf("%d", &searchID);
+
+    resultIndex = searchEmployeeByID(employees, numEmployees, searchID);
+
+    if (resultIndex != -1) {
+        printf("Employee found at index %d:\n", resultIndex);
+        displayEmployee(employees[resultIndex]);
+
+        printf("\nEnter new information for the employee:\n");
+        printf("Name: ");
+        scanf("%s", employees[resultIndex].Name);
+        printf("Age: ");
+        scanf("%d", &employees[resultIndex].Age);
+        printf("Gender: ");
+        scanf("%s", employees[resultIndex].Gender);
+        printf("Job: ");
+        scanf("%s", employees[resultIndex].Job);
+        printf("Salary: ");
+        scanf("%s", employees[resultIndex].Salary);
+        printf("Phone: ");
+        scanf("%s", employees[resultIndex].Phone);
+        printf("Address: ");
+        scanf("%s", employees[resultIndex].Address);
+        printf("Email: ");
+        scanf("%s", employees[resultIndex].Email);
+
+        file = fopen("empinfo.txt", "w");
+        if (file == NULL) {
+            printf("Unable to open file for writing.\n");
+            return;
+        }
+
+        fprintf(file, "ID,Name,Age,Gender,Job,Salary,Phone,Address,Email\n");
+        for (int i = 0; i < numEmployees; i++) {
+            fprintf(file, "%d,%s,%d,%s,%s,%s,%s,%s,%s\n",
+                    employees[i].ID, employees[i].Name, employees[i].Age,
+                    employees[i].Gender, employees[i].Job, employees[i].Salary,
+                    employees[i].Phone, employees[i].Address, employees[i].Email);
+        }
+
+        fclose(file);
+
+        printf("Employee information updated successfully.\n");
+    } else {
+        printf("Employee with ID %d not found.\n", searchID);
+    }
 }
