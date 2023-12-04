@@ -32,16 +32,16 @@ void maxmin(int arr[], int i, int j, int *max, int *min) {
     }
 }
 
-int main() {
-    int arr[] = { 3, 6, 1, 11, 4, 10 };
-    int n = sizeof(arr) / sizeof(arr[0]);
-    int max = arr[0];
-    int min = arr[0];
-
-    maxmin(arr, 0, n - 1, &max, &min);
-
-    printf("Maximum element: %d\n", max);
-    printf("Minimum element: %d\n", min);
-
-    return 0;
-}
+//int main() {
+//    int arr[] = { 3, 6, 1, 11, 4, 10 };
+//    int n = sizeof(arr) / sizeof(arr[0]);
+//    int max = arr[0];
+//    int min = arr[0];
+//
+//    maxmin(arr, 0, n - 1, &max, &min);
+//
+//    printf("Maximum element: %d\n", max);
+//    printf("Minimum element: %d\n", min);
+//
+//    return 0;
+//}
