@@ -1,6 +1,5 @@
 #include <stdio.h>
 
-// selectionSort(arr, n);
 void selectionSort(int arr[], int n)
 {
     int i, j, k;
