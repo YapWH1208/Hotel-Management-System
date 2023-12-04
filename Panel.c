@@ -57,6 +57,7 @@ void quickSort();
 int partition();
 int searchEmployeeByID();
 void ede();
+void dle();
 
 int main() {
     printf("***   Welcome to XMUM Hotel!   ***\n");
@@ -210,6 +211,9 @@ void adminLogin() {
             break;
         case 4:
             ede();
+            break;
+        case 5:
+            dle();
             break;
         case 7:
             break;
@@ -564,6 +568,72 @@ void ede() {
         fclose(file);
 
         printf("Employee information updated successfully.\n");
+    } else {
+        printf("Employee with ID %d not found.\n", searchID);
+    }
+}
+
+void dle() {
+    FILE *file;
+    char line[MAX_LINE_LENGTH];
+    Employee employees[MAX_EMPLOYEES];
+    int numEmployees = 0;
+
+    file = fopen("empinfo.txt", "r");
+    if (file == NULL) {
+        printf("Unable to open file.\n");
+        return;
+    }
+
+    fgets(line, MAX_LINE_LENGTH, file);
+
+    while (fgets(line, MAX_LINE_LENGTH, file) && numEmployees < MAX_EMPLOYEES) {
+        sscanf(line, "%d,%[^,],%d,%[^,],%[^,],%[^,],%[^,],%[^,],%s",
+               &employees[numEmployees].ID, employees[numEmployees].Name, &employees[numEmployees].Age,
+               employees[numEmployees].Gender, employees[numEmployees].Job, employees[numEmployees].Salary,
+               employees[numEmployees].Phone, employees[numEmployees].Address, employees[numEmployees].Email);
+        numEmployees++;
+    }
+
+    fclose(file);
+
+    int searchID;
+    int found = 0;
+
+    printf("Enter the Employee ID to delete: ");
+    scanf("%d", &searchID);
+
+    for (int i = 0; i < numEmployees; i++) {
+        if (employees[i].ID == searchID) {
+
+            for (int j = i; j < numEmployees - 1; j++) {
+                employees[j] = employees[j + 1];
+            }
+            numEmployees--;
+            found = 1;
+            break;
+        }
+    }
+
+    if (found) {
+
+        file = fopen("empinfo.txt", "w");
+        if (file == NULL) {
+            printf("Unable to open file for writing.\n");
+            return;
+        }
+
+        fprintf(file, "ID,Name,Age,Gender,Job,Salary,Phone,Address,Email\n");
+        for (int i = 0; i < numEmployees; i++) {
+            fprintf(file, "%d,%s,%d,%s,%s,%s,%s,%s,%s\n",
+                    employees[i].ID, employees[i].Name, employees[i].Age,
+                    employees[i].Gender, employees[i].Job, employees[i].Salary,
+                    employees[i].Phone, employees[i].Address, employees[i].Email);
+        }
+
+        fclose(file);
+
+        printf("Employee with ID %d deleted successfully.\n", searchID);
     } else {
         printf("Employee with ID %d not found.\n", searchID);
     }
