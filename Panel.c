@@ -2,16 +2,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include "windows.h"
-#include "Algorithm/SearchingAlgorithm.h"
-#include "Algorithm/SortingAlgorithm.h"
-
 
 // Define username and password
 #define USERNAME "user"
 #define PASSWORD "123456"
 #define MAX_EMPLOYEES 100
 #define MAX_ROOMS 100
-
+#define MAX_INFO_LENGTH 50
+#define MAX_LINE_LENGTH 1024
 
 // Enum for system states
 enum SystemState {
@@ -23,28 +21,26 @@ enum SystemState {
 };
 
 // Structure for Employee
-struct Employee {
+typedef struct {
     int ID;
-    char name[50];
-    int age;
-    char gender[10];
-    char job[50];
-    float salary;
-    char phone[15];
-    char address[100];
-    char email[50];
-};
+    char Name[MAX_INFO_LENGTH];
+    int Age;
+    char Gender[MAX_INFO_LENGTH];
+    char Job[MAX_INFO_LENGTH];
+    char Salary[MAX_INFO_LENGTH];
+    char Phone[MAX_INFO_LENGTH];
+    char Address[MAX_INFO_LENGTH];
+    char Email[MAX_INFO_LENGTH];
+} Employee;
 
-// Structure for Room
-struct Room {
+typedef struct {
     int roomNumber;
-    char status[20]; // available or occupied
-    char cleaningStatus[20]; // clean or dirty
+    char status[MAX_INFO_LENGTH];
+    char cleaningStatus[MAX_INFO_LENGTH];
     float price;
-    char bedType[20]; // single or double
-    float discountPercentage;
-};
-
+    char bedType[MAX_INFO_LENGTH];
+    float discount;
+} Room;
 
 // Function declarations
 void login(enum SystemState *currentState);
@@ -53,7 +49,10 @@ void adminLogin();
 void receptionLogin();
 void addEmployee();
 void addRoom();
-
+void displayEmployee();
+void displayRoom();
+void roominfo();
+void addemp();
 
 int main() {
     printf("***   Welcome to XMUM Hotel!   ***\n");
@@ -112,7 +111,6 @@ int main() {
     return 0;
 }
 
-
 // User login function
 void login(enum SystemState *currentState) {
     char username[20];
@@ -134,7 +132,6 @@ void login(enum SystemState *currentState) {
         exit(1);
     }
 }
-
 
 // Display the main control panel
 void showMainPanel(enum SystemState *currentState) {
@@ -165,32 +162,48 @@ void showMainPanel(enum SystemState *currentState) {
     }
 }
 
-
 // Admin login function
 void adminLogin() {
+    char username[20];
+    char password[20];
+
+    printf("\n=== Admin Login Block===\n");
+    printf("Enter Admin username: ");
+    scanf("%s", username);
+
+    printf("Enter Admin password: ");
+    scanf("%s", password);
+
+    if (strcmp(username, USERNAME) == 0 && strcmp(password, PASSWORD) == 0) {
+        printf("Admin Login successful!\n");
+
+    } else {
+        printf("Admin Login failed. Incorrect Admin username or password.\n");
+        exit(1);
+    }
+
     int choice;
     system("cls");
     printf("****** Dear admin, welcome to the management page! ******\n");
     printf("\n=== Admin Panel ===\n");
     printf("Logged in as Admin. Performing admin tasks\n");
-    printf("Now the task can be chosen by admin are as follows,\n1. Add Employee.\n2. Add Room.\n");
+    printf("Now the task can be chosen by admin are as follows,\n1. Show Employees' information and add new employee if you wish.\n2. Show Room information and add new room if you wish.\n");
     printf("Enter your task to be chosen: ");
     scanf("%d", &choice);
     printf("\n");
 
     switch (choice) {
         case 1:
-            addEmployee();
+            empinfo();
             break;
         case 2:
-            addRoom();
+            roominfo();
             break;
         default:
             printf("Invalid choice. Please enter a valid option.\n");
 
 }
 }
-
 
 // Reception staff login function
 void receptionLogin() {
@@ -201,114 +214,172 @@ void receptionLogin() {
     // Perform reception staff tasks here
 }
 
-
-void addEmployee() {
-    struct Employee employees[MAX_EMPLOYEES];
-    int numEmployees = 0;
-    char choice;
-
-    do {
-        if (numEmployees >= MAX_EMPLOYEES) {
-            printf("Maximum number of employees reached.\n");
-            break;
-        }
-
-        printf("\n=== Add Employee ===\n");
-        printf("Enter Employee ID: ");
-        scanf("%d", &employees[numEmployees].ID);
-
-        printf("Enter Name: ");
-        scanf("%s", employees[numEmployees].name);
-
-        printf("Enter Age: ");
-        scanf("%d", &employees[numEmployees].age);
-
-        printf("Enter Gender: ");
-        scanf("%s", employees[numEmployees].gender);
-
-        printf("Enter Job: ");
-        scanf("%s", employees[numEmployees].job);
-
-        printf("Enter Salary: ");
-        scanf("%f", &employees[numEmployees].salary);
-
-        printf("Enter Phone: ");
-        scanf("%s", employees[numEmployees].phone);
-
-        printf("Enter Address: ");
-        scanf("%s", employees[numEmployees].address);
-
-        printf("Enter Email: ");
-        scanf("%s", employees[numEmployees].email);
-
-        numEmployees++; // Increment employee count
-
-        printf("\nEmployee is added successfully!\nDo you want to add another employee? (Y/N): ");
-        scanf(" %c", &choice);
-    } while (choice == 'Y' || choice == 'y');
-
-    printf("\nThe whole information of added employees is shown: \n");
-    for (int i = 0; i < numEmployees; ++i) {
-        printf("\nEmployee %d\n", i + 1);
-        printf("Employee ID: %d\n", employees[i].ID);
-        printf("Name: %s\n", employees[i].name);
-        printf("Age: %d\n", employees[i].age);
-        printf("Gender: %s\n", employees[i].gender);
-        printf("Job: %s\n", employees[i].job);
-        printf("Salary: %.2f\n", employees[i].salary);
-        printf("Phone: %s\n", employees[i].phone);
-        printf("Address: %s\n", employees[i].address);
-        printf("Email: %s\n", employees[i].email);
-    }
+void displayEmployee(Employee emp) {
+    printf("ID: %d\nName: %s\nAge: %d\nGender: %s\nJob: %s\nSalary: %s\nPhone: %s\nAddress: %s\nEmail: %s\n\n",
+           emp.ID, emp.Name, emp.Age, emp.Gender, emp.Job, emp.Salary, emp.Phone, emp.Address, emp.Email);
 }
 
+void empinfo(){
+    FILE *file;
+    char line[MAX_LINE_LENGTH];
+    char *token;
+    Employee employees[MAX_EMPLOYEES];
+    int numEmployees = 0;
+    char addNewEmployee;
 
-void addRoom() {
-    struct Room rooms[MAX_ROOMS];
-    int numRooms = 0;
-    char choice;
-
-    do {
-        if (numRooms >= MAX_ROOMS) {
-            printf("Maximum number of rooms reached.\n");
-            break;
-        }
-
-        printf("\n=== Add Room ===\n");
-        printf("Enter Room Number: ");
-        scanf("%d", &rooms[numRooms].roomNumber);
-
-        printf("Enter Status (available or occupied): ");
-        scanf("%s", rooms[numRooms].status);
-
-        printf("Enter Cleaning Status (clean or dirty): ");
-        scanf("%s", rooms[numRooms].cleaningStatus);
-
-        printf("Enter Price: ");
-        scanf("%f", &rooms[numRooms].price);
-
-        printf("Enter Bed Type (single or double): ");
-        scanf("%s", rooms[numRooms].bedType);
-
-        printf("Enter Discount Percentage: ");
-        scanf("%f", &rooms[numRooms].discountPercentage);
-
-        numRooms++; // Increment room count
-
-        printf("\nDo you want to add another room? (Y/N): ");
-        scanf(" %c", &choice);
-    } while (choice == 'Y' || choice == 'y');
-
-
-    printf("\nRoom(s) added successfully!\n");
-    for (int i = 0; i < numRooms; ++i) {
-        printf("\nRoom %d\n", i + 1);
-        printf("Room Number: %d\n", rooms[i].roomNumber);
-        printf("Status: %s\n", rooms[i].status);
-        printf("Cleaning Status: %s\n", rooms[i].cleaningStatus);
-        printf("Price: %.2f\n", rooms[i].price);
-        printf("Bed Type: %s\n", rooms[i].bedType);
-        printf("Discount Percentage: %.2f\n", rooms[i].discountPercentage);
+    file = fopen("empinfo.txt", "r");
+    if (file == NULL) {
+        printf("Unable to open file.\n");
+        return 1;
     }
 
+    fgets(line, MAX_LINE_LENGTH, file);
+    token = strtok(line, ",");
+    while (token != NULL) {
+
+        printf("%s\t", token);
+        token = strtok(NULL, ",");
+    }
+    printf("\n");
+
+    while (fgets(line, MAX_LINE_LENGTH, file) && numEmployees < MAX_EMPLOYEES) {
+        sscanf(line, "%d,%[^,],%d,%[^,],%[^,],%[^,],%[^,],%[^,],%s",
+               &employees[numEmployees].ID, employees[numEmployees].Name, &employees[numEmployees].Age,
+               employees[numEmployees].Gender, employees[numEmployees].Job, employees[numEmployees].Salary,
+               employees[numEmployees].Phone, employees[numEmployees].Address, employees[numEmployees].Email);
+        displayEmployee(employees[numEmployees]);
+        numEmployees++;
+    }
+
+    printf("\nDo you want to add a new employee? (Y/N): ");
+    scanf(" %c", &addNewEmployee);
+
+    if (addNewEmployee == 'Y' || addNewEmployee == 'y') {
+        if (numEmployees < MAX_EMPLOYEES) {
+            printf("\nEnter details of the new employee:\n");
+            printf("ID: ");
+            scanf("%d", &employees[numEmployees].ID);
+            printf("Name: ");
+            scanf("%s", employees[numEmployees].Name);
+            printf("Age: ");
+            scanf("%d", &employees[numEmployees].Age);
+            printf("Gender: ");
+            scanf("%s", employees[numEmployees].Gender);
+            printf("Job: ");
+            scanf("%s", employees[numEmployees].Job);
+            printf("Salary: ");
+            scanf("%s", employees[numEmployees].Salary);
+            printf("Phone: ");
+            scanf("%s", employees[numEmployees].Phone);
+            printf("Address: ");
+            scanf("%s", employees[numEmployees].Address);
+            printf("Email: ");
+            scanf("%s", employees[numEmployees].Email);
+
+            numEmployees++;
+            printf("New employee added.\n");
+
+            // Rewrite updated employee information to file
+            file = fopen("empinfo.txt", "w");
+            if (file == NULL) {
+                printf("Unable to open file for writing.\n");
+                return 1;
+            }
+
+            fprintf(file, "ID,Name,Age,Gender,Job,Salary,Phone,Address,Email\n");
+            for (int i = 0; i < numEmployees; i++) {
+                fprintf(file, "%d,%s,%d,%s,%s,%s,%s,%s,%s\n",
+                        employees[i].ID, employees[i].Name, employees[i].Age,
+                        employees[i].Gender, employees[i].Job, employees[i].Salary,
+                        employees[i].Phone, employees[i].Address, employees[i].Email);
+            }
+
+            fclose(file);
+        } else {
+            printf("Maximum employee limit reached. Cannot add more employees.\n");
+        }
+    } else {
+        printf("No new employees added.\n");
+    }
+
+    return 0;
+}
+
+void displayRoom(Room room) {
+    printf("Room Number: %d\nStatus: %s\nCleaning Status: %s\nPrice: %.2f\nBed Type: %s\nDiscount Percentage: %.2f\n\n",
+           room.roomNumber, room.status, room.cleaningStatus, room.price, room.bedType, room.discount);
+}
+
+void roominfo(){
+    FILE *file;
+    char line[MAX_LINE_LENGTH];
+    char *token;
+    Room rooms[MAX_ROOMS];
+    int numRooms = 0;
+    char addRoomChoice;
+
+    file = fopen("roominfo.txt", "r");
+    if (file == NULL) {
+        printf("Unable to open file.\n");
+        return 1;
+    }
+
+    fgets(line, MAX_LINE_LENGTH, file);
+    token = strtok(line, ",");
+    while (token != NULL) {
+
+        printf("%s\t", token);
+        token = strtok(NULL, ",");
+    }
+    printf("\n");
+
+    while (fgets(line, MAX_LINE_LENGTH, file) && numRooms < MAX_ROOMS) {
+        sscanf(line, "%d,%[^,],%[^,],%f,%[^,],%f",
+               &rooms[numRooms].roomNumber, rooms[numRooms].status, rooms[numRooms].cleaningStatus,
+               &rooms[numRooms].price, rooms[numRooms].bedType, &rooms[numRooms].discount);
+        displayRoom(rooms[numRooms]);
+        numRooms++;
+    }
+
+    printf("Do you want to add a room? (Y/N): ");
+    scanf(" %c", &addRoomChoice);
+
+    if (addRoomChoice == 'Y' || addRoomChoice == 'y') {
+        // Adding room information
+        printf("Enter the room number: ");
+        scanf("%d", &rooms[numRooms].roomNumber);
+        printf("Enter status (available or occupied): ");
+        scanf("%s", rooms[numRooms].status);
+        printf("Enter cleaning status (clean or dirty): ");
+        scanf("%s", rooms[numRooms].cleaningStatus);
+        printf("Enter price: ");
+        scanf("%f", &rooms[numRooms].price);
+        printf("Enter bed type (single or double): ");
+        scanf("%s", rooms[numRooms].bedType);
+        printf("Enter discount percentage: ");
+        scanf("%f", &rooms[numRooms].discount);
+
+        printf("Room information added.\n");
+
+        numRooms++;
+
+        file = fopen("roominfo.txt", "w");
+        if (file == NULL) {
+            printf("Unable to open file for writing.\n");
+            return 1;
+        }
+
+        fprintf(file, "Room number, status (available or occupied), cleaning status (clean or dirty), price, bed type (single or double), discount percentage\n");
+        for (int i = 0; i < numRooms; i++) {
+            fprintf(file, "%d,%s,%s,%.2f,%s,%.2f\n",
+                    rooms[i].roomNumber, rooms[i].status, rooms[i].cleaningStatus,
+                    rooms[i].price, rooms[i].bedType, rooms[i].discount);
+        }
+
+        fclose(file);
+    } else {
+        printf("No room added.\n");
+    }
+
+    return 0;
 }
