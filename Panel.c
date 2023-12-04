@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include "windows.h"
+#include "Algorithm/SearchingAlgorithm.h"
+#include "Algorithm/SortingAlgorithm.h"
+
 
 // Define username and password
 #define USERNAME "user"
@@ -50,6 +53,7 @@ void adminLogin();
 void receptionLogin();
 void addEmployee();
 void addRoom();
+
 
 int main() {
     printf("***   Welcome to XMUM Hotel!   ***\n");
@@ -108,6 +112,7 @@ int main() {
     return 0;
 }
 
+
 // User login function
 void login(enum SystemState *currentState) {
     char username[20];
@@ -129,6 +134,7 @@ void login(enum SystemState *currentState) {
         exit(1);
     }
 }
+
 
 // Display the main control panel
 void showMainPanel(enum SystemState *currentState) {
@@ -159,6 +165,7 @@ void showMainPanel(enum SystemState *currentState) {
     }
 }
 
+
 // Admin login function
 void adminLogin() {
     int choice;
@@ -184,6 +191,7 @@ void adminLogin() {
 }
 }
 
+
 // Reception staff login function
 void receptionLogin() {
     system("cls");
@@ -192,6 +200,7 @@ void receptionLogin() {
     printf("Logged in as Reception Staff. Performing reception tasks...\n");
     // Perform reception staff tasks here
 }
+
 
 void addEmployee() {
     struct Employee employees[MAX_EMPLOYEES];
@@ -252,6 +261,7 @@ void addEmployee() {
         printf("Email: %s\n", employees[i].email);
     }
 }
+
 
 void addRoom() {
     struct Room rooms[MAX_ROOMS];
