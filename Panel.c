@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "windows.h"
-#include "Algorithm/SortingAlgorithm.h"
-#include "Algorithm/SearchingAlgorithm.h"
 
 // Define username and password
 #define USERNAME "user"
@@ -58,8 +56,14 @@ void addemp();
 void quickSort();
 int partition();
 int searchEmployeeByID();
+int searchRoomID();
 void ede();
 void dle();
+void edr();
+void bse();
+void empinfo();
+void quickSortRoom();
+int partitionRoom();
 
 int main() {
     printf("***   Welcome to XMUM Hotel!   ***\n");
@@ -196,7 +200,7 @@ void adminLogin() {
     printf("\n=== Admin Panel ===\n");
     printf("Logged in as Admin. Performing admin tasks\n");
     printf("Now the task can be chosen by admin are as follows,\n1. Show Employees' information and add new employee if you wish.\n2. Show Room information and add new room if you wish.\n");
-    printf("3. Search The Employee.\n4. Edit Employee data.\n5. Delete Employee.\n6. Edit Room.\n7. Exit Admin Panel.\n");
+    printf("3. Search The Employee.\n4. Edit Employee data.\n5. Delete Employee.\n6. Edit The Room Information.\n7. Exit Admin Panel.\n");
     printf("Enter your task to be chosen: ");
     scanf("%d", &choice);
     printf("\n");
@@ -216,6 +220,9 @@ void adminLogin() {
             break;
         case 5:
             dle();
+            break;
+        case 6:
+            edr();
             break;
         case 7:
             break;
@@ -414,6 +421,17 @@ void quickSort(Employee employees[], int left, int right) {
     }
 }
 
+void quickSortRoom(Room rooms[], int left, int right) {
+    if (left < right) {
+        int pivot = partitionRoom(rooms, left, right);
+
+        quickSortRoom(rooms, left, pivot - 1);
+
+        quickSortRoom(rooms, pivot + 1, right);
+    }
+}
+
+
 int partition(Employee employees[], int left, int right) {
     int pivot = employees[right].ID;
     int i = left - 1;
@@ -434,6 +452,28 @@ int partition(Employee employees[], int left, int right) {
 
     return i + 1;
 }
+
+int partitionRoom(Room rooms[], int left, int right) {
+    int pivot = rooms[right].roomNumber;
+    int i = left - 1;
+
+    for (int j = left; j < right; j++) {
+        if (rooms[j].roomNumber < pivot) {
+            i++;
+
+            Room temp = rooms[i];
+            rooms[i] = rooms[j];
+            rooms[j] = temp;
+        }
+    }
+
+    Room temp = rooms[i + 1];
+    rooms[i + 1] = rooms[right];
+    rooms[right] = temp;
+
+    return i + 1;
+}
+
 
 void bse() {
     FILE *file;
@@ -496,6 +536,26 @@ int searchEmployeeByID(Employee employees[], int numEmployees, int targetID) {
 
     return -1;
 }
+
+int searchRoomID(Room rooms[], int numRooms, int targetID) {
+    int left = 0;
+    int right = numRooms - 1;
+
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+
+        if (rooms[mid].roomNumber == targetID)
+            return mid;
+
+        if (rooms[mid].roomNumber > targetID)
+            right = mid - 1;
+        else
+            left = mid + 1;
+    }
+
+    return -1;
+}
+
 
 void ede() {
     FILE *file;
@@ -638,5 +698,76 @@ void dle() {
         printf("Employee with ID %d deleted successfully.\n", searchID);
     } else {
         printf("Employee with ID %d not found.\n", searchID);
+    }
+}
+
+void edr() {
+    FILE *file;
+    char line[MAX_LINE_LENGTH];
+    Room rooms[MAX_ROOMS];
+    int numRooms = 0;
+
+    file = fopen("roominfo.txt", "r");
+    if (file == NULL) {
+        printf("Unable to open file.\n");
+        return;
+    }
+
+    fgets(line, MAX_LINE_LENGTH, file);
+
+    while (fgets(line, MAX_LINE_LENGTH, file) && numRooms < MAX_ROOMS) {
+        sscanf(line, "%d,%[^,],%[^,],%f,%[^,],%f",
+               &rooms[numRooms].roomNumber, rooms[numRooms].status, rooms[numRooms].cleaningStatus,
+               &rooms[numRooms].price, rooms[numRooms].bedType, &rooms[numRooms].discount);
+        numRooms++;
+    }
+
+    fclose(file);
+
+    quickSortRoom(rooms, 0, numRooms - 1);
+
+    int searchID;
+    int resultIndex;
+    printf("\n");
+
+    printf("Enter the Room Number to edit: ");
+    scanf("%d", &searchID);
+
+    resultIndex = searchRoomID(rooms, numRooms, searchID);
+
+    if (resultIndex != -1) {
+        printf("Room with Room Number %d found:\n", searchID);
+        displayRoom(rooms[resultIndex]);
+
+        printf("\nEnter new information for the room:\n");
+        printf("Status (available or occupied): ");
+        scanf("%s", rooms[resultIndex].status);
+        printf("Cleaning Status (clean or dirty): ");
+        scanf("%s", rooms[resultIndex].cleaningStatus);
+        printf("Price: ");
+        scanf("%f", &rooms[resultIndex].price);
+        printf("Bed Type (single or double): ");
+        scanf("%s", rooms[resultIndex].bedType);
+        printf("Discount Percentage: ");
+        scanf("%f", &rooms[resultIndex].discount);
+
+        file = fopen("roominfo.txt", "w");
+        if (file == NULL) {
+            printf("Unable to open file for writing.\n");
+            return;
+        }
+
+        fprintf(file, "Room number, status (available or occupied), cleaning status (clean or dirty), price, bed type (single or double), discount percentage\n");
+        for (int i = 0; i < numRooms; i++) {
+            fprintf(file, "%d,%s,%s,%.2f,%s,%.2f\n",
+                    rooms[i].roomNumber, rooms[i].status, rooms[i].cleaningStatus,
+                    rooms[i].price, rooms[i].bedType, rooms[i].discount);
+        }
+
+        fclose(file);
+
+        printf("Room information updated successfully.\n");
+    } else {
+        printf("Room with Room Number %d not found.\n", searchID);
     }
 }
