@@ -393,7 +393,7 @@ void roominfo(){
         file = fopen("roominfo.txt", "w");
         if (file == NULL) {
             printf("Unable to open file for writing.\n");
-            return 1;
+            return;
         }
 
         fprintf(file, "Room number, status (available or occupied), cleaning status (clean or dirty), price, bed type (single or double), discount percentage\n");
