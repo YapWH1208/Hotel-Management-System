@@ -49,8 +49,8 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "E:/School/untitled/cmake-build-debug",
-		"source" : "E:/School/untitled"
+		"build" : "E:/GitHub/Hotel-Management-System/cmake-build-debug",
+		"source" : "E:/GitHub/Hotel-Management-System"
 	},
 	"version" : 
 	{

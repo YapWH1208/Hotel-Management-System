@@ -55,7 +55,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "e:/School/untitled/cmake-build-debug"
+			"value" : "e:/GitHub/Hotel-Management-System/cmake-build-debug"
 		},
 		{
 			"name" : "CMAKE_CACHE_MAJOR_VERSION",
@@ -431,7 +431,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "E:/School/untitled/cmake-build-debug/CMakeFiles/pkgRedirects"
+			"value" : "E:/GitHub/Hotel-Management-System/cmake-build-debug/CMakeFiles/pkgRedirects"
 		},
 		{
 			"name" : "CMAKE_GENERATOR",
@@ -503,7 +503,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "E:/School/untitled"
+			"value" : "E:/GitHub/Hotel-Management-System"
 		},
 		{
 			"name" : "CMAKE_INSTALL_PREFIX",
@@ -1131,7 +1131,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "E:/School/untitled/cmake-build-debug"
+			"value" : "E:/GitHub/Hotel-Management-System/cmake-build-debug"
 		},
 		{
 			"name" : "untitled_IS_TOP_LEVEL",
@@ -1155,7 +1155,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "E:/School/untitled"
+			"value" : "E:/GitHub/Hotel-Management-System"
 		}
 	],
 	"kind" : "cache",
