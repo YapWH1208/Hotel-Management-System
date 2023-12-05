@@ -5,6 +5,8 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include "Algorithm/SortingAlgorithm.h"
+#include "Algorithm/SearchingAlgorithm.h"
 
 // Define the username and password
 #define USERNAME "user"

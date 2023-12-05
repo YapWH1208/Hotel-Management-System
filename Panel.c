@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include "windows.h"
+#include "Algorithm/SortingAlgorithm.h"
+#include "Algorithm/SearchingAlgorithm.h"
 
 // Define username and password
 #define USERNAME "user"
