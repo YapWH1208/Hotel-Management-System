@@ -310,7 +310,7 @@ void empinfo(){
             file = fopen("empinfo.txt", "w");
             if (file == NULL) {
                 printf("Unable to open file for writing.\n");
-                return 1;
+                return;
             }
 
             fprintf(file, "ID,Name,Age,Gender,Job,Salary,Phone,Address,Email\n");
@@ -348,7 +348,7 @@ void roominfo(){
     file = fopen("roominfo.txt", "r");
     if (file == NULL) {
         printf("Unable to open file.\n");
-        return 1;
+        return;
     }
 
     fgets(line, MAX_LINE_LENGTH, file);
@@ -534,7 +534,7 @@ int searchEmployeeByID(Employee employees[], int numEmployees, int targetID) {
             left = mid + 1;
     }
 
-    return;
+    return -1;
 }
 
 int searchRoomID(Room rooms[], int numRooms, int targetID) {
@@ -553,7 +553,7 @@ int searchRoomID(Room rooms[], int numRooms, int targetID) {
             left = mid + 1;
     }
 
-    return;
+    return -1;
 }
 
 
