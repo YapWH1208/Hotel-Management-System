@@ -257,7 +257,7 @@ void empinfo(){
     file = fopen("empinfo.txt", "r");
     if (file == NULL) {
         printf("Unable to open file.\n");
-        return 1;
+        return;
     }
 
     fgets(line, MAX_LINE_LENGTH, file);
@@ -329,7 +329,7 @@ void empinfo(){
         printf("No new employees added.\n");
     }
 
-    return 0;
+    return;
 }
 
 void displayRoom(Room room) {
@@ -408,7 +408,7 @@ void roominfo(){
         printf("No room added.\n");
     }
 
-    return 0;
+    return;
 }
 
 void quickSort(Employee employees[], int left, int right) {
@@ -534,7 +534,7 @@ int searchEmployeeByID(Employee employees[], int numEmployees, int targetID) {
             left = mid + 1;
     }
 
-    return -1;
+    return;
 }
 
 int searchRoomID(Room rooms[], int numRooms, int targetID) {
@@ -553,7 +553,7 @@ int searchRoomID(Room rooms[], int numRooms, int targetID) {
             left = mid + 1;
     }
 
-    return -1;
+    return;
 }
 
 
