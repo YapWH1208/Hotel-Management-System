@@ -5,8 +5,6 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
-#include "Algorithm/SortingAlgorithm.h"
-#include "Algorithm/SearchingAlgorithm.h"
 
 // Define the username and password
 #define USERNAME "user"
@@ -102,6 +100,16 @@ void selectionSortRoomPrice(Room rooms[MAX_ROOMS], int numRooms);
 void selectionSortRoomNo(Room rooms[MAX_ROOMS], int numRooms);
 void selectionSortCustomerID(Customer customers[MAX_CUSTOMERS], int numCustomers);
 void selectionSortCustomerRNo(Customer customers[MAX_CUSTOMERS], int numCustomers);
+void printAvailableRooms(Room rooms[MAX_ROOMS], int numRooms);
+void merge(Room rooms[MAX_ROOMS], int left, int mid, int right);
+void mergeSort(Room rooms[MAX_ROOMS], int left, int right);
+void showSingleBedRoomsSortedByPrice(Room rooms[MAX_ROOMS], int numRooms);
+void bubbleSort(Room rooms[MAX_ROOMS], int numRooms);
+void showDoubleBedRoomsSortedByPrice(Room rooms[MAX_ROOMS], int numRooms);
+int linearSearchCustomerByID(int num, Customer customers[MAX_CUSTOMERS], int numCustomers);
+void searchCustomerByID(Customer customers[MAX_CUSTOMERS], int numCustomers);
+
+
 
 int main() {
     printf("***   Welcome to XMUM Hotel!   ***\n");
@@ -272,14 +280,20 @@ void receptionLogin() {
         printf("\n=== Reception Panel ===\n");
         int choice;
         printf("1. Create a new customer entry\n");
-        printf("2. Read customer data from file\n");
-        printf("3. Search for a customer by room number\n");
-        printf("4. Update room status\n");
-        printf("5. Update customer information\n");
-        printf("6. Show min and max room prices\n");
-        printf("7. Delete customer\n");
-        printf("8. Print checkout form\n");
-        printf("9. Print invoice\n");
+
+        printf("2. Show all Rooms.\n");
+        printf("3. Search for the available rooms.\n");
+        printf("4. Show the single bed Rooms sorted by price.\n");
+        printf("5. Show the double bed Rooms sorted by price.\n");
+        printf("6. Show the information of all customers.\n");
+        printf("7. Search for a customer by ID.\n");
+        printf("8. Search for a customer by room number\n");
+        printf("9. Update room status\n");
+        printf("10. Update customer information\n");
+        printf("11. Show min and max room prices\n");
+        printf("12. Delete customer\n");
+        printf("13. Print checkout form\n");
+        printf("14. Print invoice\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
         printf("\n");
@@ -310,6 +324,33 @@ void receptionLogin() {
             }
 
         case 2:{
+            for (int i = 0; i < numRooms; i++) {
+                displayRoom(&rooms[i]);
+                }
+            printf("\nDo you want to return to the Reception Panel? (1 for yes, 2 to exit): ");
+            scanf("%d", &returnToReceptionPanel);
+            break;
+        }
+        case 3:{
+
+            printAvailableRooms(rooms, numRooms);
+            printf("\nDo you want to return to the Reception Panel? (1 for yes, 2 to exit): ");
+            scanf("%d", &returnToReceptionPanel);
+            break;
+        }
+        case 4:{
+            showSingleBedRoomsSortedByPrice(rooms, numRooms);
+            printf("\nDo you want to return to the Reception Panel? (1 for yes, 2 to exit): ");
+            scanf("%d", &returnToReceptionPanel);
+            break;
+        }
+        case 5:{
+            showDoubleBedRoomsSortedByPrice(rooms, numRooms);
+            printf("\nDo you want to return to the Reception Panel? (1 for yes, 2 to exit): ");
+            scanf("%d", &returnToReceptionPanel);
+            break;
+        }
+        case 6:{
             // Print customer data
             for (int i = 0; i < numCustomers; i++) {
                 printCustomerInfo(&customers[i]);
@@ -317,8 +358,14 @@ void receptionLogin() {
             printf("\nDo you want to return to the Reception Panel? (1 for yes, 2 to exit): ");
             scanf("%d", &returnToReceptionPanel);
             break;
-            }
-        case 3:{
+        }
+        case 7:{
+            searchCustomerByID(customers, numCustomers);
+            printf("\nDo you want to return to the Reception Panel? (1 for yes, 2 to exit): ");
+            scanf("%d", &returnToReceptionPanel);
+            break;
+        }
+        case 8:{
             // Sort the data based on customer room number before applying binary search
             selectionSortCustomerRNo(customers, numCustomers);
 
@@ -328,7 +375,7 @@ void receptionLogin() {
             scanf("%d", &returnToReceptionPanel);
             break;
         }
-        case 4:{
+        case 9:{
             // Sort the data based on room number before applying binary search
             selectionSortRoomNo(rooms, numRooms);
 
@@ -338,7 +385,7 @@ void receptionLogin() {
             scanf("%d", &returnToReceptionPanel);
             break;
         }
-        case 5:{
+        case 10:{
             // Sort the data based on customer ID number before applying binary search
             selectionSortCustomerID(customers, numCustomers);
 
@@ -348,7 +395,7 @@ void receptionLogin() {
             scanf("%d", &returnToReceptionPanel);
             break;
         }
-        case 6:{
+        case 11:{
             // Show the minimum and maximum room prices
             float maxPrice = rooms[0].price;
             float minPrice = rooms[0].price;
@@ -359,7 +406,7 @@ void receptionLogin() {
             scanf("%d", &returnToReceptionPanel);
             break;
         }
-        case 7:{
+        case 12:{
             // Sort the data based on customer ID number before applying binary search
             selectionSortCustomerID(customers, numCustomers);
 
@@ -369,7 +416,7 @@ void receptionLogin() {
             scanf("%d", &returnToReceptionPanel);
             break;
         }
-        case 8:{
+        case 13:{
             // Sort the data based on customer ID number before applying binary search
             selectionSortCustomerID(customers, numCustomers);
 
@@ -379,7 +426,7 @@ void receptionLogin() {
             scanf("%d", &returnToReceptionPanel);
             break;
         }
-        case 9:{
+        case 14:{
             // Search the customer by ID number (Linear Search) and print the Invoice
             printInvoice(customers, numCustomers, rooms, numRooms);
             printf("\nDo you want to return to the Reception Panel? (1 for yes, 2 to exit): ");
@@ -399,6 +446,155 @@ void receptionLogin() {
     system("cls");
     }
 }
+
+
+// Function to print all available rooms
+void printAvailableRooms(Room rooms[MAX_ROOMS], int numRooms) {
+    int availableFound = 0;
+
+    printf("Available Rooms:\n");
+    for (int i = 0; i < numRooms; i++) {
+        if (strcasecmp(rooms[i].status, " available") == 0) {
+            printf("Room %d is available\n", rooms[i].roomNumber);
+            printRoomInfo(&rooms[i]);
+            availableFound = 1;
+        }
+    }
+
+    if (!availableFound) {
+        printf("No available rooms found.\n");
+    }
+}
+
+// Merge sort for single bed rooms based on price
+void merge(Room rooms[MAX_ROOMS], int left, int mid, int right) {
+    int i, j, k;
+    int n1 = mid - left + 1;
+    int n2 = right - mid;
+
+    Room L[n1], R[n2];
+
+    for (i = 0; i < n1; i++)
+        L[i] = rooms[left + i];
+    for (j = 0; j < n2; j++)
+        R[j] = rooms[mid + 1 + j];
+
+    i = 0;
+    j = 0;
+    k = left;
+
+    while (i < n1 && j < n2) {
+        if (L[i].price <= R[j].price) {
+            rooms[k] = L[i];
+            i++;
+        } else {
+            rooms[k] = R[j];
+            j++;
+        }
+        k++;
+    }
+
+    while (i < n1) {
+        rooms[k] = L[i];
+        i++;
+        k++;
+    }
+
+    while (j < n2) {
+        rooms[k] = R[j];
+        j++;
+        k++;
+    }
+}
+
+void mergeSort(Room rooms[MAX_ROOMS], int left, int right) {
+    if (left < right) {
+        int mid = left + (right - left) / 2;
+
+        mergeSort(rooms, left, mid);
+        mergeSort(rooms, mid + 1, right);
+
+        merge(rooms, left, mid, right);
+    }
+}
+
+// Function to show single bed rooms sorted by price
+void showSingleBedRoomsSortedByPrice(Room rooms[MAX_ROOMS], int numRooms) {
+    // Filter single bed rooms
+    Room singleBedRooms[MAX_ROOMS];
+    int singleBedCount = 0;
+    for (int i = 0; i < numRooms; i++) {
+        if (strcasecmp(rooms[i].bedType, " single") == 0) {
+            singleBedRooms[singleBedCount] = rooms[i];
+            singleBedCount++;
+        }
+    }
+
+    // Apply merge sort
+    mergeSort(singleBedRooms, 0, singleBedCount - 1);
+
+    // Print the sorted rooms
+    printf("Single Bed Rooms Sorted by Price:\n");
+    for (int i = 0; i < singleBedCount; i++) {
+        printRoomInfo(&singleBedRooms[i]);
+    }
+}
+
+// Bubble sort for double bed rooms based on price
+void bubbleSort(Room rooms[MAX_ROOMS], int numRooms) {
+    for (int i = 0; i < numRooms - 1; i++) {
+        for (int j = 0; j < numRooms - i - 1; j++) {
+            if (strcasecmp(rooms[j].bedType, " double") == 0 && strcasecmp(rooms[j + 1].bedType, " double") == 0 &&
+                rooms[j].price > rooms[j + 1].price) {
+                // Swap rooms[j] and rooms[j + 1]
+                Room temp = rooms[j];
+                rooms[j] = rooms[j + 1];
+                rooms[j + 1] = temp;
+            }
+        }
+    }
+}
+
+// Function to show double bed rooms sorted by price
+void showDoubleBedRoomsSortedByPrice(Room rooms[MAX_ROOMS], int numRooms) {
+    // Apply bubble sort
+    bubbleSort(rooms, numRooms);
+
+    // Print the sorted rooms
+    printf("Double Bed Rooms Sorted by Price:\n");
+    for (int i = 0; i < numRooms; i++) {
+        if (strcasecmp(rooms[i].bedType, " double") == 0) {
+            printRoomInfo(&rooms[i]);
+        }
+    }
+}
+
+// Linear search for a customer by ID
+int linearSearchCustomerByID(int num, Customer customers[MAX_CUSTOMERS], int numCustomers) {
+    for (int i = 0; i < numCustomers; ++i) {
+        if (customers[i].idNumber == num) {
+            return i; // return the index if found
+        }
+    }
+    return -1; // Customer not found
+}
+
+// Function to search for a customer by ID
+void searchCustomerByID(Customer customers[MAX_CUSTOMERS], int numCustomers) {
+    int customerID;
+    printf("Enter the customer ID to search: ");
+    scanf("%d", &customerID);
+
+    int result = linearSearchCustomerByID(customerID, customers, numCustomers);
+
+    if (result == -1) {
+        printf("Customer ID %d is not found.\n", customerID);
+    } else {
+        printf("Customer ID is found:\n");
+        printCustomerInfo(&customers[result]);
+    }
+}
+
 
 // Function to create a new customer entry
 Customer createNewCustomer() {
@@ -764,11 +960,10 @@ void printCustomerInfo(const Customer *customers) {
 
 // Display the customers room information
 void printRoomInfo(const Room *rooms) {
-    printf("Room Number: %d\n", rooms->roomNumber);
-    printf("Price: %.2f\n", rooms->price);
-    printf("Bed Type: %s\n", rooms->bedType);
-    printf("Discount: %.2f\n", rooms->discount);
+    printf("Room Number: %d\tPrice: %.2f \tBed Type: %s\tDiscount: %.2f\n", rooms->roomNumber, rooms->price, rooms->bedType, rooms->discount);
+    printf("\n");
 }
+
 
 // Search the customer by room number
 void searchCustomerRoomNo(Customer customers[], int numCustomers){
