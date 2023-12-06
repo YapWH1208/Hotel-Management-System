@@ -45,6 +45,7 @@ typedef struct {
     double initialPayment;
     double pendingAmount;
     double deposit;
+    int receiptNumber;
 } Customer;
 
 // Employee structure to store employee information
@@ -639,6 +640,8 @@ Customer createNewCustomer() {
     printf("Deposit: ");
     scanf("%lf", &newCustomer.deposit);
 
+    newCustomer.receiptNumber = rand() % 1000 + 1;
+
     return newCustomer;
 }
 
@@ -836,11 +839,11 @@ void saveToFile(Customer customers) {
         exit(EXIT_FAILURE);
     }
 
-    fprintf(file, "%s %d %s %s %s %d %s %s %d %.2lf %.2lf %.2lf %.2lf\n",
+    fprintf(file, "%s %d %s %s %s %d %s %s %d %.2lf %.2lf %.2lf %.2lf %d\n",
             customers.idType, customers.idNumber, customers.name, customers.gender,
             customers.country, customers.roomNumber, customers.checkInDateTime, customers.checkOutDateTime,
             customers.stayingDays, customers.totalAmount, customers.initialPayment,
-            customers.pendingAmount, customers.deposit);
+            customers.pendingAmount, customers.deposit, customers.receiptNumber);
 
     fclose(file);
 }
@@ -892,14 +895,14 @@ void readFromFile(Customer customers[MAX_CUSTOMERS], int *numCustomers) {
     *numCustomers = 0; // Initialize the number of customers
 
     while (*numCustomers < MAX_CUSTOMERS &&
-           fscanf(file, "%s %d %s %s %s %d %s %s %d %lf %lf %lf %lf",
+           fscanf(file, "%s %d %s %s %s %d %s %s %d %lf %lf %lf %lf %d",
                   customers[*numCustomers].idType, &customers[*numCustomers].idNumber,
                   customers[*numCustomers].name, customers[*numCustomers].gender,
                   customers[*numCustomers].country, &customers[*numCustomers].roomNumber,
                   customers[*numCustomers].checkInDateTime,customers[*numCustomers].checkOutDateTime,
-                  &customers[*numCustomers].stayingDays,
-                  &customers[*numCustomers].totalAmount, &customers[*numCustomers].initialPayment,
-                  &customers[*numCustomers].pendingAmount, &customers[*numCustomers].deposit) != EOF) {
+                  &customers[*numCustomers].stayingDays, &customers[*numCustomers].totalAmount, 
+                  &customers[*numCustomers].initialPayment, &customers[*numCustomers].pendingAmount,
+                   &customers[*numCustomers].deposit, &customers[*numCustomers].receiptNumber) != EOF) {
         (*numCustomers)++;
     }
 
@@ -1199,12 +1202,12 @@ void updateCustomerInformation(Customer customers[MAX_CUSTOMERS], int numCustome
 
             // Rewrite all customers' records
             for (int i = 0; i < numCustomers; ++i) {
-                fprintf(file, "%s %d %s %s %s %d %s %s %d %.2lf %.2lf %.2lf %.2lf\n",
+                fprintf(file, "%s %d %s %s %s %d %s %s %d %.2lf %.2lf %.2lf %.2lf %d\n",
                     customers[i].idType,customers[i].idNumber,customers[i].name,
                     customers[i].gender,customers[i].country,customers[i].roomNumber,
                     customers[i].checkInDateTime,customers[i].checkOutDateTime,customers[i].stayingDays,
                     customers[i].totalAmount,customers[i].initialPayment,
-                    customers[i].pendingAmount,customers[i].deposit);
+                    customers[i].pendingAmount,customers[i].deposit,customers[i].receiptNumber);
             }
 
             fclose(file);
@@ -1249,12 +1252,12 @@ void deleteCustomers(Customer customers[MAX_CUSTOMERS], int numCustomers){
                 continue; // Continue the loop to delete the customer information
             }
             // Write the other customers information excluding the deleted ones
-            fprintf(file, "%s %d %s %s %s %d %s %s %d %.2lf %.2lf %.2lf %.2lf\n",
+            fprintf(file, "%s %d %s %s %s %d %s %s %d %.2lf %.2lf %.2lf %.2lf %d\n",
                     customers[i].idType,customers[i].idNumber,customers[i].name,
                     customers[i].gender,customers[i].country,customers[i].roomNumber,
                     customers[i].checkInDateTime,customers[i].checkOutDateTime,customers[i].stayingDays,
                     customers[i].totalAmount,customers[i].initialPayment,
-                    customers[i].pendingAmount,customers[i].deposit);
+                    customers[i].pendingAmount,customers[i].deposit, customers[i].receiptNumber);
         }
         fclose(file);
         printf("Customer information has been deleted.\n");
@@ -1380,12 +1383,11 @@ void printInvoice(Customer customers[MAX_CUSTOMERS], int numCustomers, Room room
 
                 // Print the receipt
                 printf("Printing Receipt....\n");
-                // Generate random receipt number
-                int receiptNumber = rand() % 10000 + 1;
+
                 char hotelName[50] = "Deluxe Hotel";
 
                 printf("\n========= Receipt =========\n");
-                printf("Receipt Number: %d\n", receiptNumber);
+                printf("Receipt Number: %d\n", customers[result].receiptNumber);
                 printf("Date: %s\n", customers[result].checkOutDateTime);
                 printf("Hotel Name: %s\n", hotelName);
                 printf("Customer ID: %d\n", customers[result].idNumber);
