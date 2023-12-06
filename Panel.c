@@ -11,6 +11,7 @@
 #define MAX_INFO_LENGTH 50
 #define MAX_LINE_LENGTH 1024
 
+
 // Enum for system states
 enum SystemState {
     LOGIN,
@@ -19,6 +20,7 @@ enum SystemState {
     RECEPTION,
     EXIT
 };
+
 
 // Structure for Employee
 typedef struct {
@@ -33,6 +35,7 @@ typedef struct {
     char Email[MAX_INFO_LENGTH];
 } Employee;
 
+
 typedef struct {
     int roomNumber;
     char status[MAX_INFO_LENGTH];
@@ -41,6 +44,22 @@ typedef struct {
     char bedType[MAX_INFO_LENGTH];
     float discount;
 } Room;
+
+
+typedef struct {
+    int bookingID;
+    Room room;
+    char customerName[MAX_INFO_LENGTH];
+    char customerPhone[MAX_INFO_LENGTH];
+    char customerEmail[MAX_INFO_LENGTH];
+    char customerAddress[MAX_INFO_LENGTH];
+    char checkInDate[MAX_INFO_LENGTH];
+    char checkOutDate[MAX_INFO_LENGTH];
+    int numberOfAdults;
+    int numberOfChildren;
+    float totalAmount;
+} Booking;
+
 
 // Function declarations
 void login(enum SystemState *currentState);
@@ -64,6 +83,9 @@ void bse();
 void empinfo();
 void quickSortRoom();
 int partitionRoom();
+void showAllRooms();
+void showAllRoomsbyNumber();
+void showAllRoomsbyPrice();
 
 int main() {
     printf("***   Welcome to XMUM Hotel!   ***\n");
@@ -122,6 +144,7 @@ int main() {
     return 0;
 }
 
+
 // User login function
 void login(enum SystemState *currentState) {
     char username[20];
@@ -143,6 +166,7 @@ void login(enum SystemState *currentState) {
         exit(1);
     }
 }
+
 
 // Display the main control panel
 void showMainPanel(enum SystemState *currentState) {
@@ -173,6 +197,7 @@ void showMainPanel(enum SystemState *currentState) {
     }
 }
 
+
 // Admin login function
 void adminLogin() {
     system("cls");
@@ -199,8 +224,21 @@ void adminLogin() {
     printf("****** Dear admin, welcome to the management page! ******\n");
     printf("\n=== Admin Panel ===\n");
     printf("Logged in as Admin. Performing admin tasks\n");
-    printf("Now the task can be chosen by admin are as follows,\n1. Show Employees' information and add new employee if you wish.\n2. Show Room information and add new room if you wish.\n");
-    printf("3. Search The Employee.\n4. Edit Employee data.\n5. Delete Employee.\n6. Edit The Room Information.\n7. Exit Admin Panel.\n");
+    printf("Now the task can be chosen by admin are as follows,\n"
+           "1. Show Employees' information and add new employee if you wish.\n"
+           "2. Show Room information and add new room if you wish.\n"
+           "3. Search The Employee.\n"
+           "4. Edit Employee data.\n"
+           "5. Delete Employee.\n"
+           "6. Edit the Room Information.\n"
+           "7. Show all Rooms.\n"
+           "8. Show all Rooms by number.\n"
+           "9. Show all Rooms by price.\n"
+           "10. All Booking Operations.\n"
+           "11. Search Booking.\n"
+           "12. Total Income per day.\n"
+           "13. Receipts.\n"
+           "14. Exit Admin Panel.\n");
     printf("Enter your task to be chosen: ");
     scanf("%d", &choice);
     printf("\n");
@@ -225,12 +263,29 @@ void adminLogin() {
             edr();
             break;
         case 7:
+            showAllRooms();
+            break;
+        case 8:
+            showAllRoomsbyNumber();
+            break;
+        case 9:
+            showAllRoomsbyPrice();
+            break;
+        case 10:
+            break;
+        case 11:
+            break;
+        case 12:
+            break;
+        case 13:
+            break;
+        case 14:
             break;
         default:
             printf("Invalid choice. Please enter a valid option.\n");
+    }
+}
 
-}
-}
 
 // Reception staff login function
 void receptionLogin() {
@@ -241,10 +296,12 @@ void receptionLogin() {
     // Perform reception staff tasks here
 }
 
+
 void displayEmployee(Employee emp) {
     printf("ID: %d\nName: %s\nAge: %d\nGender: %s\nJob: %s\nSalary: %s\nPhone: %s\nAddress: %s\nEmail: %s\n\n",
            emp.ID, emp.Name, emp.Age, emp.Gender, emp.Job, emp.Salary, emp.Phone, emp.Address, emp.Email);
 }
+
 
 void empinfo(){
     FILE *file;
@@ -332,10 +389,12 @@ void empinfo(){
     return;
 }
 
+
 void displayRoom(Room room) {
     printf("Room Number: %d\nStatus: %s\nCleaning Status: %s\nPrice: %.2f\nBed Type: %s\nDiscount Percentage: %.2f\n\n",
            room.roomNumber, room.status, room.cleaningStatus, room.price, room.bedType, room.discount);
 }
+
 
 void roominfo(){
     FILE *file;
@@ -411,6 +470,7 @@ void roominfo(){
     return;
 }
 
+
 void quickSort(Employee employees[], int left, int right) {
     if (left < right) {
         int pivot = partition(employees, left, right);
@@ -420,6 +480,7 @@ void quickSort(Employee employees[], int left, int right) {
         quickSort(employees, pivot + 1, right);
     }
 }
+
 
 void quickSortRoom(Room rooms[], int left, int right) {
     if (left < right) {
@@ -452,6 +513,7 @@ int partition(Employee employees[], int left, int right) {
 
     return i + 1;
 }
+
 
 int partitionRoom(Room rooms[], int left, int right) {
     int pivot = rooms[right].roomNumber;
@@ -517,6 +579,7 @@ void bse() {
     }
 }
 
+
 int searchEmployeeByID(Employee employees[], int numEmployees, int targetID) {
     int left = 0;
     int right = numEmployees - 1;
@@ -536,6 +599,7 @@ int searchEmployeeByID(Employee employees[], int numEmployees, int targetID) {
 
     return -1;
 }
+
 
 int searchRoomID(Room rooms[], int numRooms, int targetID) {
     int left = 0;
@@ -635,6 +699,7 @@ void ede() {
     }
 }
 
+
 void dle() {
     FILE *file;
     char line[MAX_LINE_LENGTH];
@@ -700,6 +765,7 @@ void dle() {
         printf("Employee with ID %d not found.\n", searchID);
     }
 }
+
 
 void edr() {
     FILE *file;
@@ -770,4 +836,205 @@ void edr() {
     } else {
         printf("Room with Room Number %d not found.\n", searchID);
     }
+}
+
+
+// Function to show all rooms
+void showAllRooms(){
+    FILE *file;
+    char line[MAX_LINE_LENGTH];
+    char *token;
+    Room rooms[MAX_ROOMS];
+    int numRooms = 0;
+
+    file = fopen("roominfo.txt", "r");
+    if (file == NULL) {
+        printf("Unable to open file.\n");
+        return;
+    }
+
+    fgets(line, MAX_LINE_LENGTH, file);
+    token = strtok(line, ",");
+    while (token != NULL) {
+
+        printf("%s\t", token);
+        token = strtok(NULL, ",");
+    }
+    printf("\n");
+
+    while (fgets(line, MAX_LINE_LENGTH, file) && numRooms < MAX_ROOMS) {
+        sscanf(line, "%d,%[^,],%[^,],%f,%[^,],%f",
+               &rooms[numRooms].roomNumber, rooms[numRooms].status, rooms[numRooms].cleaningStatus,
+               &rooms[numRooms].price, rooms[numRooms].bedType, &rooms[numRooms].discount);
+        displayRoom(rooms[numRooms]);
+        numRooms++;
+    }
+}
+
+
+// Function to show all rooms by number
+void showAllRoomsbyNumber(){
+    FILE *file;
+    char line[MAX_LINE_LENGTH];
+    char *token;
+    Room rooms[MAX_ROOMS];
+    int numRooms = 0;
+
+    file = fopen("roominfo.txt", "r");
+    if (file == NULL) {
+        printf("Unable to open file.\n");
+        return;
+    }
+
+    fgets(line, MAX_LINE_LENGTH, file);
+    token = strtok(line, ",");
+    while (token != NULL) {
+
+        printf("%s\t", token);
+        token = strtok(NULL, ",");
+    }
+    printf("\n");
+
+    while (fgets(line, MAX_LINE_LENGTH, file) && numRooms < MAX_ROOMS) {
+        sscanf(line, "%d,%[^,],%[^,],%f,%[^,],%f",
+               &rooms[numRooms].roomNumber, rooms[numRooms].status, rooms[numRooms].cleaningStatus,
+               &rooms[numRooms].price, rooms[numRooms].bedType, &rooms[numRooms].discount);
+        numRooms++;
+    }
+
+    quickSortRoom(rooms, 0, numRooms - 1);
+    displayRoom(rooms[numRooms]);
+//    for (int i = 0; i < numRooms; i++) {
+//        displayRoom(rooms[i]);
+//    }
+
+    fclose(file);
+}
+
+
+void swap(Room *a, Room *b) {
+    Room temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+
+// Function to swap two rooms with bubble sort using discounted price
+void bubbleSort(Room arr[], int n) {
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if ((arr[j].price)*(1-arr[j].discount) > (arr[j+1].price)*(1-arr[j+1].discount)) {
+                swap(&arr[j], &arr[j + 1]);
+            }
+        }
+    }
+}
+
+
+// Function to show all rooms by price
+void showAllRoomsbyPrice(){
+    FILE *file;
+    char line[MAX_LINE_LENGTH];
+    char *token;
+    Room rooms[MAX_ROOMS];
+    int numRooms = 0;
+
+    file = fopen("roominfo.txt", "r");
+    if (file == NULL) {
+        printf("Unable to open file.\n");
+        return;
+    }
+
+    fgets(line, MAX_LINE_LENGTH, file);
+    token = strtok(line, ",");
+    while (token != NULL) {
+
+        printf("%s\t", token);
+        token = strtok(NULL, ",");
+    }
+    printf("\n");
+
+    while (fgets(line, MAX_LINE_LENGTH, file) && numRooms < MAX_ROOMS) {
+        sscanf(line, "%d,%[^,],%[^,],%f,%[^,],%f",
+               &rooms[numRooms].roomNumber, rooms[numRooms].status, rooms[numRooms].cleaningStatus,
+               &rooms[numRooms].price, rooms[numRooms].bedType, &rooms[numRooms].discount);
+        numRooms++;
+    }
+
+    bubbleSort(rooms, numRooms);
+    displayRoom(rooms[numRooms]);
+
+    fclose(file);
+}
+
+
+// Function to show all bookings
+void showAllBookings(){
+    FILE *file;
+    char line[MAX_LINE_LENGTH];
+    char *token;
+    Room rooms[MAX_ROOMS];
+    int numRooms = 0;
+
+    file = fopen("roominfo.txt", "r");
+    if (file == NULL) {
+        printf("Unable to open file.\n");
+        return;
+    }
+
+    fgets(line, MAX_LINE_LENGTH, file);
+    token = strtok(line, ",");
+    while (token != NULL) {
+
+        printf("%s\t", token);
+        token = strtok(NULL, ",");
+    }
+    printf("\n");
+
+    while (fgets(line, MAX_LINE_LENGTH, file) && numRooms < MAX_ROOMS) {
+        sscanf(line, "%d,%[^,],%[^,],%f,%[^,],%f",
+               &rooms[numRooms].roomNumber, rooms[numRooms].status, rooms[numRooms].cleaningStatus,
+               &rooms[numRooms].price, rooms[numRooms].bedType, &rooms[numRooms].discount);
+        displayRoom(rooms[numRooms]);
+        numRooms++;
+    }
+
+    fclose(file);
+}
+
+
+// Function to search booking
+void searchBooking(){
+    FILE *file;
+    char line[MAX_LINE_LENGTH];
+    char *token;
+    Room rooms[MAX_ROOMS];
+    int numRooms = 0;
+
+    file = fopen("roominfo.txt", "r");
+    if (file == NULL) {
+        printf("Unable to open file.\n");
+        return;
+    }
+
+    fgets(line, MAX_LINE_LENGTH, file);
+    token = strtok(line, ",");
+    while (token != NULL) {
+
+        printf("%s\t", token);
+        token = strtok(NULL, ",");
+    }
+    printf("\n");
+
+    while (fgets(line, MAX_LINE_LENGTH, file) && numRooms < MAX_ROOMS) {
+        sscanf(line, "%d,%[^,],%[^,],%f,%[^,],%f",
+               &rooms[numRooms].roomNumber, rooms[numRooms].status, rooms[numRooms].cleaningStatus,
+               &rooms[numRooms].price, rooms[numRooms].bedType, &rooms[numRooms].discount);
+        numRooms++;
+    }
+
+    quickSortRoom(rooms, 0, numRooms - 1);
+    //searchRoomID();
+
+    fclose(file);
 }
