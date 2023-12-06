@@ -5,6 +5,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <time.h>
 
 // Define the username and password
 #define USERNAME "user"
@@ -30,6 +31,15 @@ enum SystemState {
     EXIT
 };
 
+
+// Date structure to store date information
+typedef struct {
+    int year;
+    int month;
+    int day;
+} Date;
+
+
 // Customer structure to store customer information
 typedef struct {
     char idType[20];
@@ -46,7 +56,9 @@ typedef struct {
     double pendingAmount;
     double deposit;
     int receiptNumber;
+    Date date;
 } Customer;
+
 
 // Employee structure to store employee information
 typedef struct {
@@ -60,6 +72,7 @@ typedef struct {
     char Address[MAX_INFO_LENGTH];
     char Email[MAX_INFO_LENGTH];
 } Employee;
+
 
 // Room structure to store room information
 typedef struct {
@@ -107,19 +120,20 @@ void bubbleSort(Room rooms[MAX_ROOMS], int numRooms);
 void showDoubleBedRoomsSortedByPrice(Room rooms[MAX_ROOMS], int numRooms);
 int linearSearchCustomerByID(int num, Customer customers[MAX_CUSTOMERS], int numCustomers);
 void searchCustomerByID(Customer customers[MAX_CUSTOMERS], int numCustomers);
-void displayEmployee();
-void displayRoom();
-void addemp();
-void quickSort();
-int partition();
-int searchEmployeeByID();
-int searchRoomID();
 void ede();
 void dle();
 void edr();
 void bse();
-void quickSortRoom();
-int partitionRoom();
+void empinfo();
+void roominfo();
+void displayRoom(Room room);
+void showAllRooms();
+void showAllRoomsbyNumber();
+void showAllRoomsbyPrice();
+void showAllBookings();
+void searchBooking();
+void totalIncomePerDay();
+void printReceipt();
 
 
 int main() {
@@ -176,6 +190,7 @@ int main() {
     return 0;
 }
 
+
 // User login function
 void login(enum SystemState *currentState) {
     char username[20];
@@ -197,6 +212,7 @@ void login(enum SystemState *currentState) {
         exit(1);
     }
 }
+
 
 // Display the main control panel
 void showMainPanel(enum SystemState *currentState) {
@@ -227,6 +243,7 @@ void showMainPanel(enum SystemState *currentState) {
     }
 }
 
+
 // Admin login function
 void adminLogin() {
     system("cls");
@@ -253,8 +270,21 @@ void adminLogin() {
     printf("****** Dear admin, welcome to the management page! ******\n");
     printf("\n=== Admin Panel ===\n");
     printf("Logged in as Admin. Performing admin tasks\n");
-    printf("Now the task can be chosen by admin are as follows,\n1. Show Employees' information and add new employee if you wish.\n2. Show Room information and add new room if you wish.\n");
-    printf("3. Search The Employee.\n4. Edit Employee data.\n5. Delete Employee.\n6. Edit The Room Information.\n7. Exit Admin Panel.\n");
+    printf("Now the task can be chosen by admin are as follows,\n"
+           "1. Show Employees' information and add new employee if you wish.\n"
+           "2. Show Room information and add new room if you wish.\n"
+           "3. Search The Employee.\n"
+           "4. Edit Employee data.\n"
+           "5. Delete Employee.\n"
+           "6. Edit the Room Information.\n"
+           "7. Show all Rooms.\n"
+           "8. Show all Rooms by number.\n"
+           "9. Show all Rooms by price.\n"
+           "10. All Booking Operations.\n"
+           "11. Search Booking.\n"
+           "12. Total Income per day.\n"
+           "13. Receipts.\n"
+           "14. Exit Admin Panel.\n");
     printf("Enter your task to be chosen: ");
     scanf("%d", &choice);
     printf("\n");
@@ -279,12 +309,33 @@ void adminLogin() {
             edr();
             break;
         case 7:
+            showAllRooms();
+            break;
+        case 8:
+            showAllRoomsbyNumber();
+            break;
+        case 9:
+            showAllRoomsbyPrice();
+            break;
+        case 10:
+            showAllBookings();
+            break;
+        case 11:
+            searchBooking();
+            break;
+        case 12:
+            totalIncomePerDay();
+            break;
+        case 13:
+            printReceipt();
+            break;
+        case 14:
             break;
         default:
             printf("Invalid choice. Please enter a valid option.\n");
+    }
+}
 
-}
-}
 
 // Reception staff login function
 void receptionLogin() {
@@ -324,7 +375,6 @@ void receptionLogin() {
         printf("\n=== Reception Panel ===\n");
         int choice;
         printf("1. Create a new customer entry\n");
-
         printf("2. Show all Rooms.\n");
         printf("3. Search for the available rooms.\n");
         printf("4. Show the single bed Rooms sorted by price.\n");
@@ -369,7 +419,7 @@ void receptionLogin() {
 
         case 2:{
             for (int i = 0; i < numRooms; i++) {
-                displayRoom(&rooms[i]);
+                displayRoom(rooms[i]);
                 }
             printf("\nDo you want to return to the Reception Panel? (1 for yes, 2 to exit): ");
             scanf("%d", &returnToReceptionPanel);
@@ -510,7 +560,8 @@ void printAvailableRooms(Room rooms[MAX_ROOMS], int numRooms) {
     }
 }
 
-// Merge sort for single bed rooms based on price
+
+// Merge sort for single bedrooms based on price
 void merge(Room rooms[MAX_ROOMS], int left, int mid, int right) {
     int i, j, k;
     int n1 = mid - left + 1;
@@ -550,7 +601,6 @@ void merge(Room rooms[MAX_ROOMS], int left, int mid, int right) {
         k++;
     }
 }
-
 void mergeSort(Room rooms[MAX_ROOMS], int left, int right) {
     if (left < right) {
         int mid = left + (right - left) / 2;
@@ -562,7 +612,8 @@ void mergeSort(Room rooms[MAX_ROOMS], int left, int right) {
     }
 }
 
-// Function to show single bed rooms sorted by price
+
+// Function to show single bedrooms sorted by price
 void showSingleBedRoomsSortedByPrice(Room rooms[MAX_ROOMS], int numRooms) {
     // Filter single bed rooms
     Room singleBedRooms[MAX_ROOMS];
@@ -584,7 +635,8 @@ void showSingleBedRoomsSortedByPrice(Room rooms[MAX_ROOMS], int numRooms) {
     }
 }
 
-// Bubble sort for double bed rooms based on price
+
+// Bubble sort for double bedrooms based on price
 void bubbleSort(Room rooms[MAX_ROOMS], int numRooms) {
     for (int i = 0; i < numRooms - 1; i++) {
         for (int j = 0; j < numRooms - i - 1; j++) {
@@ -599,7 +651,8 @@ void bubbleSort(Room rooms[MAX_ROOMS], int numRooms) {
     }
 }
 
-// Function to show double bed rooms sorted by price
+
+// Function to show double bedrooms sorted by price
 void showDoubleBedRoomsSortedByPrice(Room rooms[MAX_ROOMS], int numRooms) {
     // Apply bubble sort
     bubbleSort(rooms, numRooms);
@@ -613,6 +666,7 @@ void showDoubleBedRoomsSortedByPrice(Room rooms[MAX_ROOMS], int numRooms) {
     }
 }
 
+
 // Linear search for a customer by ID
 int linearSearchCustomerByID(int num, Customer customers[MAX_CUSTOMERS], int numCustomers) {
     for (int i = 0; i < numCustomers; ++i) {
@@ -622,6 +676,7 @@ int linearSearchCustomerByID(int num, Customer customers[MAX_CUSTOMERS], int num
     }
     return -1; // Customer not found
 }
+
 
 // Function to search for a customer by ID
 void searchCustomerByID(Customer customers[MAX_CUSTOMERS], int numCustomers) {
@@ -685,8 +740,16 @@ Customer createNewCustomer() {
 
     newCustomer.receiptNumber = rand() % 1000 + 1;
 
+    time_t currentTime;
+    time(&currentTime);
+    struct tm *timeInfo = localtime(&currentTime);
+    newCustomer.date.day = timeInfo->tm_mday;
+    newCustomer.date.month = timeInfo->tm_mon + 1;
+    newCustomer.date.year = timeInfo->tm_year + 1900;
+
     return newCustomer;
 }
+
 
 // Function to calculate pending amount
 double calculatePendingAmount(double totalAmount, double initialPayment) {
@@ -708,14 +771,15 @@ void saveToFile(Customer customers) {
         exit(EXIT_FAILURE);
     }
 
-    fprintf(file, "%s %d %s %s %s %d %s %s %d %.2lf %.2lf %.2lf %.2lf %d\n",
+    fprintf(file, "%s %d %s %s %s %d %s %s %d %.2lf %.2lf %.2lf %.2lf %d %d-%d-%d\n",
             customers.idType, customers.idNumber, customers.name, customers.gender,
             customers.country, customers.roomNumber, customers.checkInDateTime, customers.checkOutDateTime,
             customers.stayingDays, customers.totalAmount, customers.initialPayment,
-            customers.pendingAmount, customers.deposit, customers.receiptNumber);
+            customers.pendingAmount, customers.deposit, customers.receiptNumber, customers.date.day,customers.date.month,customers.date.year);
 
     fclose(file);
 }
+
 
 // Function to create the customer data folder and file if they don't exist
 void createFolderAndFileIfNotExists() {
@@ -748,6 +812,7 @@ void createFolderAndFileIfNotExists() {
     fclose(file);
 }
 
+
 // Function to read customer data from a file
 void readFromFile(Customer customers[MAX_CUSTOMERS], int *numCustomers) {
 
@@ -764,19 +829,21 @@ void readFromFile(Customer customers[MAX_CUSTOMERS], int *numCustomers) {
     *numCustomers = 0; // Initialize the number of customers
 
     while (*numCustomers < MAX_CUSTOMERS &&
-           fscanf(file, "%s %d %s %s %s %d %s %s %d %lf %lf %lf %lf %d",
+           fscanf(file, "%s %d %s %s %s %d %s %s %d %lf %lf %lf %lf %d %d-%d-%d",
                   customers[*numCustomers].idType, &customers[*numCustomers].idNumber,
                   customers[*numCustomers].name, customers[*numCustomers].gender,
                   customers[*numCustomers].country, &customers[*numCustomers].roomNumber,
                   customers[*numCustomers].checkInDateTime,customers[*numCustomers].checkOutDateTime,
                   &customers[*numCustomers].stayingDays, &customers[*numCustomers].totalAmount,
                   &customers[*numCustomers].initialPayment, &customers[*numCustomers].pendingAmount,
-                   &customers[*numCustomers].deposit, &customers[*numCustomers].receiptNumber) != EOF) {
+                   &customers[*numCustomers].deposit, &customers[*numCustomers].receiptNumber,
+                   &customers[*numCustomers].date.day, &customers[*numCustomers].date.month, &customers[*numCustomers].date.year) != EOF) {
         (*numCustomers)++;
     }
 
     fclose(file);
 }
+
 
 // Function to read rooms information from the file
 void readFromRoomFile(Room rooms[MAX_ROOMS], int *numRooms) {
@@ -812,6 +879,7 @@ void readFromRoomFile(Room rooms[MAX_ROOMS], int *numRooms) {
     fclose(file);
 }
 
+
 // Display the customers information
 void printCustomerInfo(const Customer *customers) {
     printf("Customer ID type: %s\n", customers->idType);
@@ -827,8 +895,11 @@ void printCustomerInfo(const Customer *customers) {
     printf("Initial payment: %.2lf\n", customers->initialPayment);
     printf("Pending amount: %.2lf\n", customers->pendingAmount);
     printf("Deposit: %.2lf\n", customers->deposit);
+    printf("Receipt number: %d\n", customers->receiptNumber);
+    printf("Date: %d-%d-%d\n", customers->date.day, customers->date.month, customers->date.year);
     printf("\n");
 }
+
 
 // Display the customers room information
 void printRoomInfo(const Room *rooms) {
@@ -852,6 +923,7 @@ void searchCustomerRoomNo(Customer customers[], int numCustomers){
         printCustomerInfo(&customers[result]);
     }
 }
+
 
 // Update the room Status to available or occupied
 void updateRoomStatus(Room rooms[MAX_ROOMS], int numRooms){
@@ -902,6 +974,7 @@ void updateRoomStatus(Room rooms[MAX_ROOMS], int numRooms){
     }
 }
 
+
 // Update the room status to occupied after a new customer booked the room
 void updateStatus(Room rooms[MAX_ROOMS], int numRooms){
     int allocatedRoomNumber;
@@ -949,6 +1022,7 @@ void updateStatus(Room rooms[MAX_ROOMS], int numRooms){
     }
 
 }
+
 
 // Update the customers information
 void updateCustomerInformation(Customer customers[MAX_CUSTOMERS], int numCustomers){
@@ -1085,6 +1159,7 @@ void updateCustomerInformation(Customer customers[MAX_CUSTOMERS], int numCustome
     }
 }
 
+
 // Delete the customer information
 void deleteCustomers(Customer customers[MAX_CUSTOMERS], int numCustomers){
     int customerID;
@@ -1134,6 +1209,7 @@ void deleteCustomers(Customer customers[MAX_CUSTOMERS], int numCustomers){
         printf("Customer information was not deleted.\n");
     }
 }
+
 
 // Print the Checkout Form
 void printCheckoutForm(Customer customers[MAX_CUSTOMERS], int numCustomers,Room rooms[MAX_ROOMS], int numRooms){
@@ -1189,6 +1265,7 @@ void printCheckoutForm(Customer customers[MAX_CUSTOMERS], int numCustomers,Room 
         printf("Room status updated to available.\n");
     }
 }
+
 
 // Print the invoice
 void printInvoice(Customer customers[MAX_CUSTOMERS], int numCustomers, Room rooms[MAX_ROOMS], int numRooms){
@@ -1289,6 +1366,7 @@ void printInvoice(Customer customers[MAX_CUSTOMERS], int numCustomers, Room room
     }
 }
 
+
 // Algorithms
 // Binary search using Customer ID Number
 int binarySearchCustomerID(int num, Customer customers[MAX_CUSTOMERS], int low, int high) {
@@ -1306,6 +1384,7 @@ int binarySearchCustomerID(int num, Customer customers[MAX_CUSTOMERS], int low, 
     return -1;
 }
 
+
 // Binary search using Customer Room Number
 int binarySearchCRoomNo(int num, Customer customers[MAX_CUSTOMERS], int low, int high) {
     if (high >= low) {
@@ -1322,6 +1401,7 @@ int binarySearchCRoomNo(int num, Customer customers[MAX_CUSTOMERS], int low, int
     return -1;
 }
 
+
 // Binary search using Room Number
 int binarySearchRRoomNo(int num, Room rooms[MAX_ROOMS], int low, int high) {
     if (high >= low) {
@@ -1337,6 +1417,7 @@ int binarySearchRRoomNo(int num, Room rooms[MAX_ROOMS], int low, int high) {
     }
     return -1;
 }
+
 
 // Find the minimum and maximum prices of all rooms
 void maxmin(Room rooms[], int i, int j, float *maxPrice, float *minPrice) {
@@ -1372,6 +1453,7 @@ void maxmin(Room rooms[], int i, int j, float *maxPrice, float *minPrice) {
     }
 }
 
+
 // Selection Sort using Prices of rooms
 void selectionSortRoomPrice(Room rooms[MAX_ROOMS], int numRooms){
     int i, j, k;
@@ -1392,6 +1474,7 @@ void selectionSortRoomPrice(Room rooms[MAX_ROOMS], int numRooms){
         }
     }
 }
+
 
 // Selection Sort using Room Number
 void selectionSortRoomNo(Room rooms[MAX_ROOMS], int numRooms){
@@ -1414,6 +1497,7 @@ void selectionSortRoomNo(Room rooms[MAX_ROOMS], int numRooms){
     }
 }
 
+
 // Selection Sort using Customer ID Number
 void selectionSortCustomerID(Customer customers[MAX_CUSTOMERS], int numCustomers){
     int i, j, k;
@@ -1434,6 +1518,7 @@ void selectionSortCustomerID(Customer customers[MAX_CUSTOMERS], int numCustomers
         }
     }
 }
+
 
 // Selection Sort using Customer room number
 void selectionSortCustomerRNo(Customer customers[MAX_CUSTOMERS], int numCustomers){
@@ -1457,34 +1542,8 @@ void selectionSortCustomerRNo(Customer customers[MAX_CUSTOMERS], int numCustomer
 }
 
 
-
-
 //Admin Panel Functions
-
-
-
-
-void quickSort(Employee employees[], int left, int right) {
-    if (left < right) {
-        int pivot = partition(employees, left, right);
-
-        quickSort(employees, left, pivot - 1);
-
-        quickSort(employees, pivot + 1, right);
-    }
-}
-
-void quickSortRoom(Room rooms[], int left, int right) {
-    if (left < right) {
-        int pivot = partitionRoom(rooms, left, right);
-
-        quickSortRoom(rooms, left, pivot - 1);
-
-        quickSortRoom(rooms, pivot + 1, right);
-    }
-}
-
-
+// Partitioning employees for quick sort
 int partition(Employee employees[], int left, int right) {
     int pivot = employees[right].ID;
     int i = left - 1;
@@ -1506,6 +1565,8 @@ int partition(Employee employees[], int left, int right) {
     return i + 1;
 }
 
+
+// Partitioning rooms for quick sort
 int partitionRoom(Room rooms[], int left, int right) {
     int pivot = rooms[right].roomNumber;
     int i = left - 1;
@@ -1528,6 +1589,86 @@ int partitionRoom(Room rooms[], int left, int right) {
 }
 
 
+// Quick sort for employees
+void quickSort(Employee employees[], int left, int right) {
+    if (left < right) {
+        int pivot = partition(employees, left, right);
+
+        quickSort(employees, left, pivot - 1);
+        quickSort(employees, pivot + 1, right);
+    }
+}
+
+
+// Quick sort for rooms
+void quickSortRoom(Room rooms[], int left, int right) {
+    if (left < right) {
+        int pivot = partitionRoom(rooms, left, right);
+
+        quickSortRoom(rooms, left, pivot - 1);
+        quickSortRoom(rooms, pivot + 1, right);
+    }
+}
+
+
+// Display all rooms
+void displayRoom(Room room) {
+    printf("Room Number: %d\nStatus: %s\nCleaning Status: %s\nPrice: %.2f\nBed Type: %s\nDiscount Percentage: %.2f\n\n",
+           room.roomNumber, room.status, room.cleaningStatus, room.price, room.bedType, room.discount);
+}
+
+
+// Display all employees
+void displayEmployee(Employee emp) {
+    printf("ID: %d\nName: %s\nAge: %d\nGender: %s\nJob: %s\nSalary: %s\nPhone: %s\nAddress: %s\nEmail: %s\n\n",
+           emp.ID, emp.Name, emp.Age, emp.Gender, emp.Job, emp.Salary, emp.Phone, emp.Address, emp.Email);
+}
+
+
+// Search for employee by ID
+int searchEmployeeByID(Employee employees[], int numEmployees, int targetID) {
+    int left = 0;
+    int right = numEmployees - 1;
+
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+
+        if (employees[mid].ID == targetID)
+            return mid;
+
+        if (employees[mid].ID > targetID)
+            right = mid - 1;
+
+        else
+            left = mid + 1;
+    }
+
+    return -1;
+}
+
+
+// Search for room by ID
+int searchRoomID(Room rooms[], int numRooms, int targetID) {
+    int left = 0;
+    int right = numRooms - 1;
+
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+
+        if (rooms[mid].roomNumber == targetID)
+            return mid;
+
+        if (rooms[mid].roomNumber > targetID)
+            right = mid - 1;
+        else
+            left = mid + 1;
+    }
+
+    return -1;
+}
+
+
+// Binary search for employee by name
 void bse() {
     FILE *file;
     char line[MAX_LINE_LENGTH];
@@ -1570,46 +1711,8 @@ void bse() {
     }
 }
 
-int searchEmployeeByID(Employee employees[], int numEmployees, int targetID) {
-    int left = 0;
-    int right = numEmployees - 1;
 
-    while (left <= right) {
-        int mid = left + (right - left) / 2;
-
-        if (employees[mid].ID == targetID)
-            return mid;
-
-        if (employees[mid].ID > targetID)
-            right = mid - 1;
-
-        else
-            left = mid + 1;
-    }
-
-    return -1;
-}
-
-int searchRoomID(Room rooms[], int numRooms, int targetID) {
-    int left = 0;
-    int right = numRooms - 1;
-
-    while (left <= right) {
-        int mid = left + (right - left) / 2;
-
-        if (rooms[mid].roomNumber == targetID)
-            return mid;
-
-        if (rooms[mid].roomNumber > targetID)
-            right = mid - 1;
-        else
-            left = mid + 1;
-    }
-
-    return -1;
-}
-
-
+// Edit employee information
 void ede() {
     FILE *file;
     char line[MAX_LINE_LENGTH];
@@ -1688,6 +1791,8 @@ void ede() {
     }
 }
 
+
+// Delete employee information
 void dle() {
     FILE *file;
     char line[MAX_LINE_LENGTH];
@@ -1754,6 +1859,8 @@ void dle() {
     }
 }
 
+
+// Edit room information
 void edr() {
     FILE *file;
     char line[MAX_LINE_LENGTH];
@@ -1825,16 +1932,8 @@ void edr() {
     }
 }
 
-void displayRoom(Room room) {
-    printf("Room Number: %d\nStatus: %s\nCleaning Status: %s\nPrice: %.2f\nBed Type: %s\nDiscount Percentage: %.2f\n\n",
-           room.roomNumber, room.status, room.cleaningStatus, room.price, room.bedType, room.discount);
-}
 
-void displayEmployee(Employee emp) {
-    printf("ID: %d\nName: %s\nAge: %d\nGender: %s\nJob: %s\nSalary: %s\nPhone: %s\nAddress: %s\nEmail: %s\n\n",
-           emp.ID, emp.Name, emp.Age, emp.Gender, emp.Job, emp.Salary, emp.Phone, emp.Address, emp.Email);
-}
-
+// Print employee information
 void empinfo(){
     FILE *file;
     char line[MAX_LINE_LENGTH];
@@ -1921,6 +2020,8 @@ void empinfo(){
     return;
 }
 
+
+// Print room information
 void roominfo(){
     FILE *file;
     char line[MAX_LINE_LENGTH];
@@ -1993,4 +2094,312 @@ void roominfo(){
     }
 
     return;
+}
+
+
+// Function to show all rooms
+void showAllRooms(){
+    FILE *file;
+    char line[MAX_LINE_LENGTH];
+    char *token;
+    Room rooms[MAX_ROOMS];
+    int numRooms = 0;
+
+    file = fopen("roominfo.txt", "r");
+    if (file == NULL) {
+        printf("Unable to open file.\n");
+        return;
+    }
+
+    fgets(line, MAX_LINE_LENGTH, file);
+    token = strtok(line, ",");
+    while (token != NULL) {
+
+        printf("%s\t", token);
+        token = strtok(NULL, ",");
+    }
+    printf("\n");
+
+    while (fgets(line, MAX_LINE_LENGTH, file) && numRooms < MAX_ROOMS) {
+        sscanf(line, "%d,%[^,],%[^,],%f,%[^,],%f",
+               &rooms[numRooms].roomNumber, rooms[numRooms].status, rooms[numRooms].cleaningStatus,
+               &rooms[numRooms].price, rooms[numRooms].bedType, &rooms[numRooms].discount);
+        displayRoom(rooms[numRooms]);
+        numRooms++;
+    }
+}
+
+
+// Function to show all rooms by number
+void showAllRoomsbyNumber(){
+    FILE *file;
+    char line[MAX_LINE_LENGTH];
+    char *token;
+    Room rooms[MAX_ROOMS];
+    int numRooms = 0;
+
+    file = fopen("roominfo.txt", "r");
+    if (file == NULL) {
+        printf("Unable to open file.\n");
+        return;
+    }
+
+    fgets(line, MAX_LINE_LENGTH, file);
+    token = strtok(line, ",");
+    while (token != NULL) {
+
+        printf("%s\t", token);
+        token = strtok(NULL, ",");
+    }
+    printf("\n");
+
+    while (fgets(line, MAX_LINE_LENGTH, file) && numRooms < MAX_ROOMS) {
+        sscanf(line, "%d,%[^,],%[^,],%f,%[^,],%f",
+               &rooms[numRooms].roomNumber, rooms[numRooms].status, rooms[numRooms].cleaningStatus,
+               &rooms[numRooms].price, rooms[numRooms].bedType, &rooms[numRooms].discount);
+        numRooms++;
+    }
+
+    quickSortRoom(rooms, 0, numRooms - 1);
+    displayRoom(rooms[numRooms]);
+//    for (int i = 0; i < numRooms; i++) {
+//        displayRoom(rooms[i]);
+//    }
+
+    fclose(file);
+}
+
+
+// Swap two rooms
+void swap(Room *a, Room *b) {
+    Room temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+
+// Function to swap two rooms with bubble sort using discounted price
+void bubbleSortRooms(Room arr[], int n) {
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if ((arr[j].price)*(1-arr[j].discount) > (arr[j+1].price)*(1-arr[j+1].discount)) {
+                swap(&arr[j], &arr[j + 1]);
+            }
+        }
+    }
+}
+
+
+// Function to show all rooms by price
+void showAllRoomsbyPrice(){
+    FILE *file;
+    char line[MAX_LINE_LENGTH];
+    char *token;
+    Room rooms[MAX_ROOMS];
+    int numRooms = 0;
+
+    file = fopen("roominfo.txt", "r");
+    if (file == NULL) {
+        printf("Unable to open file.\n");
+        return;
+    }
+
+    fgets(line, MAX_LINE_LENGTH, file);
+    token = strtok(line, ",");
+    while (token != NULL) {
+
+        printf("%s\t", token);
+        token = strtok(NULL, ",");
+    }
+    printf("\n");
+
+    while (fgets(line, MAX_LINE_LENGTH, file) && numRooms < MAX_ROOMS) {
+        sscanf(line, "%d,%[^,],%[^,],%f,%[^,],%f",
+               &rooms[numRooms].roomNumber, rooms[numRooms].status, rooms[numRooms].cleaningStatus,
+               &rooms[numRooms].price, rooms[numRooms].bedType, &rooms[numRooms].discount);
+        numRooms++;
+    }
+
+    bubbleSortRooms(rooms, numRooms);
+    displayRoom(rooms[numRooms]);
+
+    fclose(file);
+}
+
+
+// Function to show all bookings
+void showAllBookings(){
+    FILE *file;
+    char line[MAX_LINE_LENGTH];
+    Customer customers[MAX_CUSTOMERS];
+    int numCustomers = 0;
+    Date date;
+
+    file = fopen("./customer_data.txt", "r");
+    if (file == NULL) {
+        printf("Unable to open file.\n");
+        return;
+    }
+
+    fgets(line, MAX_LINE_LENGTH, file);
+
+    while (numCustomers < MAX_CUSTOMERS && fgets(line, MAX_LINE_LENGTH, file)) {
+        sscanf(file, "%s %d %s %s %s %d %s %s %d %lf %lf %lf %lf %d %d-%d-%d",
+               customers[numCustomers].idType, &customers[numCustomers].idNumber,
+               customers[numCustomers].name, customers[numCustomers].gender,
+               customers[numCustomers].country, &customers[numCustomers].roomNumber,
+               customers[numCustomers].checkInDateTime,customers[numCustomers].checkOutDateTime,
+               &customers[numCustomers].stayingDays, &customers[numCustomers].totalAmount,
+               &customers[numCustomers].initialPayment, &customers[numCustomers].pendingAmount,
+               &customers[numCustomers].deposit, &customers[numCustomers].receiptNumber,
+               &customers[numCustomers].date.day, &customers[numCustomers].date.month, &customers[numCustomers].date.year);
+        numCustomers++;
+    }
+
+    for (int i = 0; i < numCustomers; i++) {
+        printCustomerInfo(&customers[i]);
+    }
+}
+
+
+// Function to show all bookings by date
+int compareDates(Date dateA, Date dateB) {
+    if (dateA.year != dateB.year) {
+        return dateA.year - dateB.year;
+    }
+
+    if (dateA.month != dateB.month) {
+        return dateA.month - dateB.month;
+    }
+    return dateA.day - dateB.day;
+}
+
+
+// Binary search using Date in customer data
+int binarySearchbyDate(Customer customer[], int numDates, Date target) {
+    int low = 0;
+    int high = numDates - 1;
+
+    while (low <= high) {
+        int mid = (low + high) / 2;
+        int comparison = compareDates(target, customer->date);
+
+        if (comparison == 0) {
+            return mid;
+        } else if (comparison < 0) {
+            high = mid - 1;
+        } else {
+            low = mid + 1;
+        }
+    }
+    return -1;
+}
+
+
+// Function to search booking
+void searchBooking(){
+    FILE *file;
+    char line[MAX_LINE_LENGTH];
+    Customer customers[MAX_CUSTOMERS];
+    int numCustomers = 0;
+    Date date;
+
+    file = fopen("./customer_data.txt", "r");
+    if (file == NULL) {
+        printf("Unable to open file.\n");
+        return;
+    }
+
+    fgets(line, MAX_LINE_LENGTH, file);
+
+    while (numCustomers < MAX_CUSTOMERS && fgets(line, MAX_LINE_LENGTH, file)) {
+           sscanf(file, "%s %d %s %s %s %d %s %s %d %lf %lf %lf %lf %d %d-%d-%d",
+                  customers[numCustomers].idType, &customers[numCustomers].idNumber,
+                  customers[numCustomers].name, customers[numCustomers].gender,
+                  customers[numCustomers].country, &customers[numCustomers].roomNumber,
+                  customers[numCustomers].checkInDateTime,customers[numCustomers].checkOutDateTime,
+                  &customers[numCustomers].stayingDays, &customers[numCustomers].totalAmount,
+                  &customers[numCustomers].initialPayment, &customers[numCustomers].pendingAmount,
+                  &customers[numCustomers].deposit, &customers[numCustomers].receiptNumber,
+                  &customers[numCustomers].date.day, &customers[numCustomers].date.month, &customers[numCustomers].date.year);
+        numCustomers++;
+    }
+
+    printf("\nEnter target date (YYYY-MM-DD): ");
+    scanf("%d-%d-%d", &date.year, &date.month, &date.day);
+    int ans = binarySearchbyDate(customers, numCustomers, date);
+    printCustomerInfo(&customers[ans]);
+
+    fclose(file);
+}
+
+
+// Total income per day
+void totalIncomePerDay(){
+    FILE *file;
+    char line[MAX_LINE_LENGTH];
+    Customer customers[MAX_CUSTOMERS];
+    int numCustomers = 0;
+    Date date;
+    int income;
+
+    file = fopen("./customer_data.txt", "r");
+    if (file == NULL) {
+        printf("Unable to open file.\n");
+        return;
+    }
+
+    fgets(line, MAX_LINE_LENGTH, file);
+
+    while (numCustomers < MAX_CUSTOMERS && fgets(line, MAX_LINE_LENGTH, file)) {
+        sscanf(file, "%s %d %s %s %s %d %s %s %d %lf %lf %lf %lf %d %d-%d-%d",
+               customers[numCustomers].idType, &customers[numCustomers].idNumber,
+               customers[numCustomers].name, customers[numCustomers].gender,
+               customers[numCustomers].country, &customers[numCustomers].roomNumber,
+               customers[numCustomers].checkInDateTime,customers[numCustomers].checkOutDateTime,
+               &customers[numCustomers].stayingDays, &customers[numCustomers].totalAmount,
+               &customers[numCustomers].initialPayment, &customers[numCustomers].pendingAmount,
+               &customers[numCustomers].deposit, &customers[numCustomers].receiptNumber,
+               &customers[numCustomers].date.day, &customers[numCustomers].date.month, &customers[numCustomers].date.year);
+        numCustomers++;
+    }
+
+    for(int i = 0; i < numCustomers; i++){
+        income += customers[i].totalAmount;
+    }
+}
+
+
+// print receipt for all bookings
+void printReceipt(){
+    FILE *file;
+    char line[MAX_LINE_LENGTH];
+    Customer customers[MAX_CUSTOMERS];
+    int numCustomers = 0;
+    Date date;
+
+    file = fopen("./customer_data.txt", "r");
+    if (file == NULL) {
+        printf("Unable to open file.\n");
+        return;
+    }
+
+    fgets(line, MAX_LINE_LENGTH, file);
+
+    while (numCustomers < MAX_CUSTOMERS && fgets(line, MAX_LINE_LENGTH, file)) {
+        sscanf(file, "%s %d %s %s %s %d %s %s %d %lf %lf %lf %lf %d %d-%d-%d",
+               customers[numCustomers].idType, &customers[numCustomers].idNumber,
+               customers[numCustomers].name, customers[numCustomers].gender,
+               customers[numCustomers].country, &customers[numCustomers].roomNumber,
+               customers[numCustomers].checkInDateTime,customers[numCustomers].checkOutDateTime,
+               &customers[numCustomers].stayingDays, &customers[numCustomers].totalAmount,
+               &customers[numCustomers].initialPayment, &customers[numCustomers].pendingAmount,
+               &customers[numCustomers].deposit, &customers[numCustomers].receiptNumber,
+               &customers[numCustomers].date.day, &customers[numCustomers].date.month, &customers[numCustomers].date.year);
+        numCustomers++;
+    }
+
+    for(int i=0; i<numCustomers; i++){
+        printCustomerInfo(&customers[i]);
+    }
 }
