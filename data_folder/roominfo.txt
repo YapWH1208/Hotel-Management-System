@@ -1,11 +1,11 @@
-Room number, status (available or occupied), cleaning status (clean or dirty), price, bed type (single or double), discount 
-101, occupied, clean,100.00, single,0.00
-102, occupied, dirty,120.00, double,0.10
-103,available, clean,110.00, single,0.05
-104, occupied, dirty,130.00, double,0.00
-105, occupied, clean,105.00, single,0.08
-106, occupied, dirty,125.00, double,0.15
-107,available, clean,115.00, single,0.03
-108, occupied, dirty,135.00, double,0.12
-109, occupied, clean,95.00, single,0.02
-110, occupied, dirty,140.00, double,0.00
+Room number,status (available or occupied),cleaning status (clean or dirty),price,bed type (single or double),discount percentage
+101,available,clean,100,single,0.0
+102,occupied,dirty,120,double,0.10
+103,available,clean,110,single,0.05
+104,occupied,dirty,130,double,0.0
+105,available,clean,105,single,0.08
+106,occupied,dirty,125,double,0.15
+107,available,clean,115,single,0.03
+108,occupied,dirty,135,double,0.12
+109,available,clean,95,single,0.02
+110,occupied,dirty,140,double,0.0
