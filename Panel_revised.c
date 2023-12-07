@@ -411,6 +411,7 @@ void receptionLogin() {
             saveToFile(newCustomer);
 
             printf("Customer entry saved successfully!\n");
+            printf("\nThe random-generated receipt number is %d\n",newCustomer.receiptNumber);
             updateStatus(rooms, numRooms);
             printf("\nDo you want to return to the Reception Panel? (1 for yes, 2 to exit): ");
             scanf("%d", &returnToReceptionPanel);
