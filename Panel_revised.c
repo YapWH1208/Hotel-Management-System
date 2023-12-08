@@ -250,7 +250,7 @@ void adminLogin() {
     char username[20];
     char password[20];
 
-    printf("\n=== Admin Login Block===\n");
+    printf("\n=== Admin Login Block ===\n");
     printf("Enter Admin username: ");
     scanf("%s", username);
 
@@ -269,11 +269,10 @@ void adminLogin() {
 
     int choice;
     system("cls");
-    printf("****** Dear admin, welcome to the management page! ******\n");
+    printf("****** Dear admin, welcome to the Management page! ******\n");
     printf("\n=== Admin Panel ===\n");
-    printf("Logged in as Admin. Performing admin tasks\n");
-    printf("Now the task can be chosen by admin are as follows,\n"
-           "1. Show Employees' information and add new employee if needed\n"
+    printf("Logged in to Admin.\nPerforming admin tasks:\n");
+    printf("1. Show Employees' information and add new employee if needed\n"
            "2. Show Room information and add new room if needed\n"
            "3. Search The Employee\n"
            "4. Edit Employee data\n"
@@ -342,12 +341,11 @@ void adminLogin() {
 // Reception staff login function
 void receptionLogin() {
     system("cls");
-    printf("              ****** Dear Reception Staff, welcome to the Front Desk Management page! ******                 \n");
-
+    
     char username2[20];
     char password2[20];
 
-    printf("\n=== User Login ===\n");
+    printf("\n=== Reception Login Block ===\n");
     printf("Enter username: ");
     scanf("%s", username2);
 
@@ -372,10 +370,13 @@ void receptionLogin() {
     while(returnToReceptionPanel == 1){
 
         system("cls");
-
+        
         // Perform reception staff tasks here
+        printf("****** Dear Receptionist, welcome to the Management page! ******\n");
         printf("\n=== Reception Panel ===\n");
         int choice;
+        printf("Logged in to Reception.\n");
+        printf("Performing reception tasks:\n");
         printf("1. Create a new customer entry\n");
         printf("2. Show all Rooms\n");
         printf("3. Search for the available rooms\n");
