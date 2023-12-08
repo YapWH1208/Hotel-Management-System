@@ -259,6 +259,8 @@ void adminLogin() {
 
     if (strcmp(username, USERNAME) == 0 && strcmp(password, PASSWORD) == 0) {
         printf("Admin Login successful!\n");
+        printf("The admin management page will appear.\n");
+        sleep(3);
 
     } else {
         printf("Admin Login failed. Incorrect Admin username or password.\n");
@@ -271,19 +273,19 @@ void adminLogin() {
     printf("\n=== Admin Panel ===\n");
     printf("Logged in as Admin. Performing admin tasks\n");
     printf("Now the task can be chosen by admin are as follows,\n"
-           "1. Show Employees' information and add new employee if you wish.\n"
-           "2. Show Room information and add new room if you wish.\n"
-           "3. Search The Employee.\n"
-           "4. Edit Employee data.\n"
-           "5. Delete Employee.\n"
-           "6. Edit the Room Information.\n"
-           "7. Show all Rooms.\n"
-           "8. Show all Rooms by number.\n"
-           "9. Show all Rooms by price.\n"
-           "10. All Booking Operations.\n"
-           "11. Search Booking.\n"
-           "12. Total Income per day.\n"
-           "13. Receipts.\n"
+           "1. Show Employees' information and add new employee if needed\n"
+           "2. Show Room information and add new room if needed\n"
+           "3. Search The Employee\n"
+           "4. Edit Employee data\n"
+           "5. Delete Employee\n"
+           "6. Edit the Room Information\n"
+           "7. Show all Rooms\n"
+           "8. Show all Rooms by number\n"
+           "9. Show all Rooms by price\n"
+           "10. All Booking Operations\n"
+           "11. Search Booking\n"
+           "12. Total Income per day\n"
+           "13. Receipts\n"
            "14. Exit Admin Panel.\n");
     printf("Enter your task to be chosen: ");
     scanf("%d", &choice);
@@ -388,6 +390,7 @@ void receptionLogin() {
         printf("12. Delete customer\n");
         printf("13. Print checkout form\n");
         printf("14. Print invoice\n");
+        printf("15. Exit Reception Panel\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
         printf("\n");
@@ -528,6 +531,9 @@ void receptionLogin() {
             scanf("%d", &returnToReceptionPanel);
             break;
         }
+        case 15:{
+             returnToReceptionPanel = 2;
+             break;}    
         default:{
             printf("Invalid choice\n");
             sleep(3);
