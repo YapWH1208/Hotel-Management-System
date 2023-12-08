@@ -285,7 +285,7 @@ void adminLogin() {
            "11. Search Booking\n"
            "12. Total Income per day\n"
            "13. Receipts\n"
-           "14. Exit Admin Panel.\n");
+           "14. Exit Admin Panel\n");
     printf("Enter your task to be chosen: ");
     scanf("%d", &choice);
     printf("\n");
