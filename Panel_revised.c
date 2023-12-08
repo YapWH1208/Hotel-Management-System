@@ -375,12 +375,12 @@ void receptionLogin() {
         printf("\n=== Reception Panel ===\n");
         int choice;
         printf("1. Create a new customer entry\n");
-        printf("2. Show all Rooms.\n");
-        printf("3. Search for the available rooms.\n");
-        printf("4. Show the single bed Rooms sorted by price.\n");
-        printf("5. Show the double bed Rooms sorted by price.\n");
-        printf("6. Show the information of all customers.\n");
-        printf("7. Search for a customer by ID.\n");
+        printf("2. Show all Rooms\n");
+        printf("3. Search for the available rooms\n");
+        printf("4. Show the single bed Rooms sorted by price\n");
+        printf("5. Show the double bed Rooms sorted by price\n");
+        printf("6. Show the information of all customers\n");
+        printf("7. Search for a customer by ID\n");
         printf("8. Search for a customer by room number\n");
         printf("9. Update room status\n");
         printf("10. Update customer information\n");
