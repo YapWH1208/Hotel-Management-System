@@ -556,7 +556,7 @@ void printAvailableRooms(Room rooms[MAX_ROOMS], int numRooms) {
 
     printf("Available Rooms:\n");
     for (int i = 0; i < numRooms; i++) {
-        if (strcasecmp(rooms[i].status, " available") == 0) {
+        if (strcasecmp(rooms[i].status, "available") == 0) {
             printf("Room %d is available\n", rooms[i].roomNumber);
             printRoomInfo(&rooms[i]);
             availableFound = 1;
@@ -627,7 +627,7 @@ void showSingleBedRoomsSortedByPrice(Room rooms[MAX_ROOMS], int numRooms) {
     Room singleBedRooms[MAX_ROOMS];
     int singleBedCount = 0;
     for (int i = 0; i < numRooms; i++) {
-        if (strcasecmp(rooms[i].bedType, " single") == 0) {
+        if (strcasecmp(rooms[i].bedType, "single") == 0) {
             singleBedRooms[singleBedCount] = rooms[i];
             singleBedCount++;
         }
@@ -648,7 +648,7 @@ void showSingleBedRoomsSortedByPrice(Room rooms[MAX_ROOMS], int numRooms) {
 void bubbleSort(Room rooms[MAX_ROOMS], int numRooms) {
     for (int i = 0; i < numRooms - 1; i++) {
         for (int j = 0; j < numRooms - i - 1; j++) {
-            if (strcasecmp(rooms[j].bedType, " double") == 0 && strcasecmp(rooms[j + 1].bedType, " double") == 0 &&
+            if (strcasecmp(rooms[j].bedType, "double") == 0 && strcasecmp(rooms[j + 1].bedType, " double") == 0 &&
                 rooms[j].price > rooms[j + 1].price) {
                 // Swap rooms[j] and rooms[j + 1]
                 Room temp = rooms[j];
@@ -668,7 +668,7 @@ void showDoubleBedRoomsSortedByPrice(Room rooms[MAX_ROOMS], int numRooms) {
     // Print the sorted rooms
     printf("Double Bed Rooms Sorted by Price:\n");
     for (int i = 0; i < numRooms; i++) {
-        if (strcasecmp(rooms[i].bedType, " double") == 0) {
+        if (strcasecmp(rooms[i].bedType, "double") == 0) {
             printRoomInfo(&rooms[i]);
         }
     }
