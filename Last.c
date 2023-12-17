@@ -122,10 +122,10 @@ void displayRoom(Room room);
 void showAllRooms();
 void showAllRoomsbyNumber();
 void showAllRoomsbyPrice();
-void showAllBookings();
-void searchBooking();
-void totalIncomePerDay();
-void printReceipt();
+void showAllBookings(Customer customers[MAX_CUSTOMERS], int *numCustomers);
+void searchBooking(Customer customers[MAX_CUSTOMERS], int *numCustomers);
+void totalIncomePerDay(Customer customers[MAX_CUSTOMERS], int *numCustomers);
+void printReceipt(Customer customers[MAX_CUSTOMERS], int *numCustomers);
 
 
 int main() {
@@ -258,74 +258,122 @@ void adminLogin() {
         printf("Admin Login failed. Incorrect Admin username or password.\n");
         exit(1);
     }
+    int returnToAdminPanel = 1;
+    while(returnToAdminPanel == 1){
 
-    int choice;
+        system("cls");
+        int choice;
+        printf("****** Dear admin, welcome to the Management page! ******\n");
+        printf("\n=== Admin Panel ===\n");
+        printf("Logged in to Admin.\nPerforming admin tasks:\n");
+        printf("1. Show Employees' information and add new employee if needed\n"
+               "2. Show Room information and add new room if needed\n"
+               "3. Search The Employee\n"
+               "4. Edit Employee data\n"
+               "5. Delete Employee\n"
+               "6. Edit the Room Information\n"
+               "7. Show all Rooms\n"
+               "8. Show all Rooms by number\n"
+               "9. Show all Rooms by price\n"
+               "10. All Booking Operations\n"
+               "11. Search Booking\n"
+               "12. Total Income per day\n"
+               "13. Receipts\n"
+               "14. Exit Admin Panel\n");
+        printf("Enter your task to be chosen: ");
+        scanf("%d", &choice);
+        printf("\n");
+
+        Customer customers[MAX_CUSTOMERS];
+        Room rooms[MAX_ROOMS];
+        int numCustomers;
+        int numRooms;
+
+        // Read customer data from file
+        readFromFile(customers, &numCustomers);
+        // Read room data from file
+        readFromRoomFile(rooms, &numRooms);
+
+        switch (choice) {
+            case 1:{
+                empinfo();
+                printf("Do you want to return to the Admin Panel? (1 for yes, 2 to exit): ");
+                scanf("%d", &returnToAdminPanel);
+                break;}
+            case 2:{
+                roominfo();
+                printf("Do you want to return to the Admin Panel? (1 for yes, 2 to exit): ");
+                scanf("%d", &returnToAdminPanel);
+                break;}
+            case 3:{
+                bse();
+                printf("Do you want to return to the Admin Panel? (1 for yes, 2 to exit): ");
+                scanf("%d", &returnToAdminPanel);
+                break;}
+            case 4:{
+                ede();
+                printf("Do you want to return to the Admin Panel? (1 for yes, 2 to exit): ");
+                scanf("%d", &returnToAdminPanel);
+                break;}
+            case 5:{
+                dle();
+                printf("Do you want to return to the Admin Panel? (1 for yes, 2 to exit): ");
+                scanf("%d", &returnToAdminPanel);
+                break;}
+            case 6:{
+                edr();
+                printf("Do you want to return to the Admin Panel? (1 for yes, 2 to exit): ");
+                scanf("%d", &returnToAdminPanel);
+                break;}
+            case 7:{
+                showAllRooms();
+                printf("Do you want to return to the Admin Panel? (1 for yes, 2 to exit): ");
+                scanf("%d", &returnToAdminPanel);
+                break;}
+            case 8:{
+                showAllRoomsbyNumber();
+                printf("Do you want to return to the Admin Panel? (1 for yes, 2 to exit): ");
+                scanf("%d", &returnToAdminPanel);
+                break;}
+            case 9:{
+                showAllRoomsbyPrice();
+                printf("Do you want to return to the Admin Panel? (1 for yes, 2 to exit): ");
+                scanf("%d", &returnToAdminPanel);
+                break;}
+            case 10:{
+                showAllBookings(customers, &numCustomers);
+                printf("Do you want to return to the Admin Panel? (1 for yes, 2 to exit): ");
+                scanf("%d", &returnToAdminPanel);
+                break;}
+            case 11:{
+                searchBooking(customers, &numCustomers);
+                printf("Do you want to return to the Admin Panel? (1 for yes, 2 to exit): ");
+                scanf("%d", &returnToAdminPanel);
+                break;}
+            case 12:{
+                totalIncomePerDay(customers, &numCustomers);
+                printf("Do you want to return to the Admin Panel? (1 for yes, 2 to exit): ");
+                scanf("%d", &returnToAdminPanel);
+                break;}
+            case 13:{
+                printReceipt(customers, &numCustomers);
+                printf("Do you want to return to the Admin Panel? (1 for yes, 2 to exit): ");
+                scanf("%d", &returnToAdminPanel);
+                break;}
+            case 14:{
+                returnToAdminPanel = 2;
+                break;
+            }
+            default:{
+                printf("Invalid choice. Please enter a valid option.\n");
+                break;
+            }
+
+        printf("Do you want to return to the Admin Panel? (1 for yes, 2 to exit): ");
+        scanf("%d", &returnToAdminPanel);
+        }
+
     system("cls");
-    printf("****** Dear admin, welcome to the Management page! ******\n");
-    printf("\n=== Admin Panel ===\n");
-    printf("Logged in to Admin.\nPerforming admin tasks:\n");
-    printf("1. Show Employees' information and add new employee if needed\n"
-           "2. Show Room information and add new room if needed\n"
-           "3. Search The Employee\n"
-           "4. Edit Employee data\n"
-           "5. Delete Employee\n"
-           "6. Edit the Room Information\n"
-           "7. Show all Rooms\n"
-           "8. Show all Rooms by number\n"
-           "9. Show all Rooms by price\n"
-           "10. All Booking Operations\n"
-           "11. Search Booking\n"
-           "12. Total Income per day\n"
-           "13. Receipts\n"
-           "14. Exit Admin Panel\n");
-    printf("Enter your task to be chosen: ");
-    scanf("%d", &choice);
-    printf("\n");
-
-    switch (choice) {
-        case 1:
-            empinfo();
-            break;
-        case 2:
-            roominfo();
-            break;
-        case 3:
-            bse();
-            break;
-        case 4:
-            ede();
-            break;
-        case 5:
-            dle();
-            break;
-        case 6:
-            edr();
-            break;
-        case 7:
-            showAllRooms();
-            break;
-        case 8:
-            showAllRoomsbyNumber();
-            break;
-        case 9:
-            showAllRoomsbyPrice();
-            break;
-        case 10:
-            showAllBookings();
-            break;
-        case 11:
-            searchBooking();
-            break;
-        case 12:
-            totalIncomePerDay();
-            break;
-        case 13:
-            printReceipt();
-            break;
-        case 14:
-            break;
-        default:
-            printf("Invalid choice. Please enter a valid option.\n");
     }
 }
 
@@ -765,7 +813,7 @@ void saveToFile(Customer customers) {
         exit(EXIT_FAILURE);
     }
 
-    fprintf(file, "%s %d %s %s %s %d %s %s %d %.2lf %.2lf %.2lf %.2lf %d %d-%d-%d\n",
+    fprintf(file, "%s %d %s %s %s %d %s %s %d %.2lf %.2lf %.2lf %.2lf %d\n",
             customers.idType, customers.idNumber, customers.name, customers.gender,
             customers.country, customers.roomNumber, customers.checkInDateTime, customers.checkOutDateTime,
             customers.stayingDays, customers.totalAmount, customers.initialPayment,
@@ -823,7 +871,7 @@ void readFromFile(Customer customers[MAX_CUSTOMERS], int *numCustomers) {
     *numCustomers = 0; // Initialize the number of customers
 
     while (*numCustomers < MAX_CUSTOMERS &&
-           fscanf(file, "%s %d %s %s %s %d %s %s %d %lf %lf %lf %lf %d %d-%d-%d",
+           fscanf(file, "%s %d %s %s %s %d %s %s %d %lf %lf %lf %lf %d",
                   customers[*numCustomers].idType, &customers[*numCustomers].idNumber,
                   customers[*numCustomers].name, customers[*numCustomers].gender,
                   customers[*numCustomers].country, &customers[*numCustomers].roomNumber,
@@ -2186,7 +2234,6 @@ void showAllRoomsbyNumber(){
     fclose(file);
 }
 
-
 // Swap two rooms
 void swap(Room *a, Room *b) {
     Room temp = *a;
@@ -2248,93 +2295,92 @@ void showAllRoomsbyPrice(){
     fclose(file);
 }
 
-
 // Function to show all bookings
-void showAllBookings(){
+void showAllBookings(Customer customers[MAX_CUSTOMERS], int *numCustomers){
+
     char filename[100];
     sprintf(filename, "%s/%s", FOLDER_NAME, FILE_NAME);
 
     FILE *file = fopen(filename, "r");
-
-    char line[MAX_LINE_LENGTH];
-    Customer customers[MAX_CUSTOMERS];
-    int numCustomers = 0;
 
     if (file == NULL) {
         printf("Unable to open file.\n");
         return;
     }
 
-    fgets(line, MAX_LINE_LENGTH, file);
+    *numCustomers = 0; // Initialize the number of customers
 
-    while (numCustomers < MAX_CUSTOMERS && fgets(line, MAX_LINE_LENGTH, file)) {
-        sscanf(file, "%s %d %s %s %s %d %s %s %d %lf %lf %lf %lf %d",
-               customers[numCustomers].idType, &customers[numCustomers].idNumber,
-               customers[numCustomers].name, customers[numCustomers].gender,
-               customers[numCustomers].country, &customers[numCustomers].roomNumber,
-               customers[numCustomers].checkInDateTime,customers[numCustomers].checkOutDateTime,
-               &customers[numCustomers].stayingDays, &customers[numCustomers].totalAmount,
-               &customers[numCustomers].initialPayment, &customers[numCustomers].pendingAmount,
-               &customers[numCustomers].deposit, &customers[numCustomers].receiptNumber);
-        numCustomers++;
+    while (*numCustomers < MAX_CUSTOMERS &&
+           fscanf(file, "%s %d %s %s %s %d %s %s %d %lf %lf %lf %lf %d",
+                  customers[*numCustomers].idType, &customers[*numCustomers].idNumber,
+                  customers[*numCustomers].name, customers[*numCustomers].gender,
+                  customers[*numCustomers].country, &customers[*numCustomers].roomNumber,
+                  customers[*numCustomers].checkInDateTime,customers[*numCustomers].checkOutDateTime,
+                  &customers[*numCustomers].stayingDays, &customers[*numCustomers].totalAmount,
+                  &customers[*numCustomers].initialPayment, &customers[*numCustomers].pendingAmount,
+                   &customers[*numCustomers].deposit, &customers[*numCustomers].receiptNumber) != EOF) {
+        (*numCustomers)++;
     }
 
-    for (int i = 0; i < numCustomers; i++) {
+    for (int i = 0; i < *numCustomers; i++) {
         printCustomerInfo(&customers[i]);
     }
+    fclose(file);
 }
 
 
 // Function to show all bookings by date
-int compareDates(char dateA[], char dateB[]) {
-    if (strlen(dateA) != strlen(dateB)) {
-        printf("Invalid date format.\n");
-        exit(0);
-    }
-    for (int i = 0; i < strlen(dateA); i++) {
-        if (dateA[i] < dateB[i]) {
-            return -1;
-        } else if (dateA[i] > dateB[i]) {
-            return 1;
-        }
-    }
+int compareDates(const char *date1, const char *date2) {
+    // Convert strings to a comparable format
+    int day1, month1, year1;
+    sscanf(date1, "%2d%2d%2d", &month1, &day1, &year1);
+    int date_num1 = year1 * 10000 + month1 * 100 + day1;
 
-    return 0;
+    int day2, month2, year2;
+    sscanf(date2, "%2d%2d%2d", &month2, &day2, &year2);
+    int date_num2 = year2 * 10000 + month2 * 100 + day2;
+
+    // Compare the numerical representations
+    if (date_num1 < date_num2) {
+        return -1;
+    } else if (date_num1 > date_num2) {
+        return 1;
+    } else {
+        return 0;
+    }
 }
 
 
 
 // Binary search using Date in customer data
-int binarySearchbyDate(Customer customer[], int numDates, char target[]) {
-    int low = 0;
-    int high = numDates - 1;
+int binarySearchbyDate(Customer customers[MAX_CUSTOMERS], int *numCustomers, const char *search_date) {
+    int left = 0;
+    int right = numCustomers - 1;
 
-    while (low <= high) {
-        int mid = (low + high) / 2;
-        int comparison = compareDates(target, customer->checkInDateTime);
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+        int cmp = compareDates(customers[mid].checkInDateTime, search_date);
 
-        if (comparison == 0) {
-            return mid;
-        } else if (comparison < 0) {
-            high = mid - 1;
+        if (cmp == 0) {
+            return mid; // Date found at index mid
+        } else if (cmp < 0) {
+            left = mid + 1; // Search the right half
         } else {
-            low = mid + 1;
+            right = mid - 1; // Search the left half
         }
     }
-    return -1;
+
+    return -1; // Date not found
 }
 
 
 // Function to search booking
-void searchBooking(){
+void searchBooking(Customer customers[MAX_CUSTOMERS], int *numCustomers){
     char filename[100];
     sprintf(filename, "%s/%s", FOLDER_NAME, FILE_NAME);
 
     FILE *file = fopen(filename, "r");
 
-    char line[MAX_LINE_LENGTH];
-    Customer customers[MAX_CUSTOMERS];
-    int numCustomers = 0;
     char date[20];
 
     if (file == NULL) {
@@ -2342,23 +2388,23 @@ void searchBooking(){
         return;
     }
 
-    fgets(line, MAX_LINE_LENGTH, file);
+    *numCustomers = 0; // Initialize the number of customers
 
-    while (numCustomers < MAX_CUSTOMERS && fgets(line, MAX_LINE_LENGTH, file)) {
-           sscanf(file, "%s %d %s %s %s %d %s %s %d %lf %lf %lf %lf %d",
-                  customers[numCustomers].idType, &customers[numCustomers].idNumber,
-                  customers[numCustomers].name, customers[numCustomers].gender,
-                  customers[numCustomers].country, &customers[numCustomers].roomNumber,
-                  customers[numCustomers].checkInDateTime,customers[numCustomers].checkOutDateTime,
-                  &customers[numCustomers].stayingDays, &customers[numCustomers].totalAmount,
-                  &customers[numCustomers].initialPayment, &customers[numCustomers].pendingAmount,
-                  &customers[numCustomers].deposit, &customers[numCustomers].receiptNumber);
-        numCustomers++;
+    while (*numCustomers < MAX_CUSTOMERS &&
+           fscanf(file, "%s %d %s %s %s %d %s %s %d %lf %lf %lf %lf %d",
+                  customers[*numCustomers].idType, &customers[*numCustomers].idNumber,
+                  customers[*numCustomers].name, customers[*numCustomers].gender,
+                  customers[*numCustomers].country, &customers[*numCustomers].roomNumber,
+                  customers[*numCustomers].checkInDateTime,customers[*numCustomers].checkOutDateTime,
+                  &customers[*numCustomers].stayingDays, &customers[*numCustomers].totalAmount,
+                  &customers[*numCustomers].initialPayment, &customers[*numCustomers].pendingAmount,
+                   &customers[*numCustomers].deposit, &customers[*numCustomers].receiptNumber) != EOF) {
+        (*numCustomers)++;
     }
 
     printf("\nEnter target date (DDMMYY): ");
     scanf("%s", date);
-    int ans = binarySearchbyDate(customers, numCustomers, date);
+    int ans = binarySearchbyDate(customers, *numCustomers, date);
     printCustomerInfo(&customers[ans]);
 
     fclose(file);
@@ -2366,15 +2412,12 @@ void searchBooking(){
 
 
 // Total income per day
-void totalIncomePerDay(){
+void totalIncomePerDay(Customer customers[MAX_CUSTOMERS], int *numCustomers){
     char filename[100];
     sprintf(filename, "%s/%s", FOLDER_NAME, FILE_NAME);
 
     FILE *file = fopen(filename, "r");
 
-    char line[MAX_LINE_LENGTH];
-    Customer customers[MAX_CUSTOMERS];
-    int numCustomers = 0;
     int income;
 
     if (file == NULL) {
@@ -2382,21 +2425,21 @@ void totalIncomePerDay(){
         return;
     }
 
-    fgets(line, MAX_LINE_LENGTH, file);
+    *numCustomers = 0; // Initialize the number of customers
 
-    while (numCustomers < MAX_CUSTOMERS && fgets(line, MAX_LINE_LENGTH, file)) {
-        sscanf(file, "%s %d %s %s %s %d %s %s %d %lf %lf %lf %lf %d",
-               customers[numCustomers].idType, &customers[numCustomers].idNumber,
-               customers[numCustomers].name, customers[numCustomers].gender,
-               customers[numCustomers].country, &customers[numCustomers].roomNumber,
-               customers[numCustomers].checkInDateTime,customers[numCustomers].checkOutDateTime,
-               &customers[numCustomers].stayingDays, &customers[numCustomers].totalAmount,
-               &customers[numCustomers].initialPayment, &customers[numCustomers].pendingAmount,
-               &customers[numCustomers].deposit, &customers[numCustomers].receiptNumber);
-        numCustomers++;
+    while (*numCustomers < MAX_CUSTOMERS &&
+           fscanf(file, "%s %d %s %s %s %d %s %s %d %lf %lf %lf %lf %d",
+                  customers[*numCustomers].idType, &customers[*numCustomers].idNumber,
+                  customers[*numCustomers].name, customers[*numCustomers].gender,
+                  customers[*numCustomers].country, &customers[*numCustomers].roomNumber,
+                  customers[*numCustomers].checkInDateTime,customers[*numCustomers].checkOutDateTime,
+                  &customers[*numCustomers].stayingDays, &customers[*numCustomers].totalAmount,
+                  &customers[*numCustomers].initialPayment, &customers[*numCustomers].pendingAmount,
+                   &customers[*numCustomers].deposit, &customers[*numCustomers].receiptNumber) != EOF) {
+        (*numCustomers)++;
     }
 
-    for(int i = 0; i < numCustomers; i++){
+    for(int i = 0; i < *numCustomers; i++){
         income += customers[i].totalAmount;
     }
 
@@ -2405,36 +2448,32 @@ void totalIncomePerDay(){
 
 
 // print receipt for all bookings
-void printReceipt(){
+void printReceipt(Customer customers[MAX_CUSTOMERS], int *numCustomers){
     char filename[100];
     sprintf(filename, "%s/%s", FOLDER_NAME, FILE_NAME);
 
     FILE *file = fopen(filename, "r");
-
-    char line[MAX_LINE_LENGTH];
-    Customer customers[MAX_CUSTOMERS];
-    int numCustomers = 0;
 
     if (file == NULL) {
         printf("Unable to open file.\n");
         return;
     }
 
-    fgets(line, MAX_LINE_LENGTH, file);
+    *numCustomers = 0; // Initialize the number of customers
 
-    while (numCustomers < MAX_CUSTOMERS && fgets(line, MAX_LINE_LENGTH, file)) {
-        sscanf(file, "%s %d %s %s %s %d %s %s %d %lf %lf %lf %lf %d",
-               customers[numCustomers].idType, &customers[numCustomers].idNumber,
-               customers[numCustomers].name, customers[numCustomers].gender,
-               customers[numCustomers].country, &customers[numCustomers].roomNumber,
-               customers[numCustomers].checkInDateTime,customers[numCustomers].checkOutDateTime,
-               &customers[numCustomers].stayingDays, &customers[numCustomers].totalAmount,
-               &customers[numCustomers].initialPayment, &customers[numCustomers].pendingAmount,
-               &customers[numCustomers].deposit, &customers[numCustomers].receiptNumber);
-        numCustomers++;
+    while (*numCustomers < MAX_CUSTOMERS &&
+           fscanf(file, "%s %d %s %s %s %d %s %s %d %lf %lf %lf %lf %d",
+                  customers[*numCustomers].idType, &customers[*numCustomers].idNumber,
+                  customers[*numCustomers].name, customers[*numCustomers].gender,
+                  customers[*numCustomers].country, &customers[*numCustomers].roomNumber,
+                  customers[*numCustomers].checkInDateTime,customers[*numCustomers].checkOutDateTime,
+                  &customers[*numCustomers].stayingDays, &customers[*numCustomers].totalAmount,
+                  &customers[*numCustomers].initialPayment, &customers[*numCustomers].pendingAmount,
+                   &customers[*numCustomers].deposit, &customers[*numCustomers].receiptNumber) != EOF) {
+        (*numCustomers)++;
     }
 
-    for(int i=0; i<numCustomers; i++){
+    for(int i=0; i<*numCustomers; i++){
         printCustomerInfo(&customers[i]);
     }
 }
