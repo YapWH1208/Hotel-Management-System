@@ -2179,7 +2179,9 @@ void showAllRoomsbyNumber(){
     }
 
     quickSortRoom(rooms, 0, numRooms - 1);
-    displayRoom(rooms[numRooms]);
+    for(int i=0; i<numRooms; i++){
+        displayRoom(rooms[i]);
+    }
 
     fclose(file);
 }
@@ -2239,7 +2241,9 @@ void showAllRoomsbyPrice(){
     }
 
     bubbleSortRooms(rooms, numRooms);
-    displayRoom(rooms[numRooms]);
+    for(int i=0; i<numRooms; i++){
+        displayRoom(rooms[i]);
+    }
 
     fclose(file);
 }
