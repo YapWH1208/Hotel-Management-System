@@ -16,4 +16,5 @@ add_executable(untitled
         Algorithm/SearchingAlgorithm.h
         Algorithm/Selection_Sort.c
         Algorithm/SortingAlgorithm.h
-        Panel_revised.c)
+        Panel_revised.c
+        Last.c)
