@@ -44,10 +44,9 @@ Upon running the executable, the system will prompt for login credentials. Use t
 
 ## Contributors
 
-- Lyu YaXing (@ASTAR)
-- Yap WeiHerng (@YapWH1208)
-- Lee SinTian (@Tian)
-- Cao Rui (@HawkingC)
+<a href="https://github.com/YapWH1208/Hotel-Management-System/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=YapWH1208/Hotel-Management-System" />
+</a>
 
 ## License
 
